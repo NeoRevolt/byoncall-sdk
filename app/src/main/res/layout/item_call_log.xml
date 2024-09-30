@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/itemCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="2dp"
+    android:layout_marginVertical="1dp"
+    android:elevation="15dp"
+    app:cardCornerRadius="20dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ripple_effect"
+        android:paddingBottom="10dp">
+
+        <ImageView
+            android:id="@+id/callIconIV"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginVertical="15dp"
+            android:background="@drawable/circle_background"
+            android:backgroundTint="@color/message_gray_light"
+            android:padding="1dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/asset_person_ic"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/usernameTv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/usernameTv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:maxLength="15"
+            android:text="DartMedia demo"
+            android:textColor="@color/message_blue"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/callIconIV"
+            app:layout_constraintTop_toTopOf="@id/callIconIV" />
+
+        <TextView
+            android:id="@+id/callMessageTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/callIconIV"
+            app:layout_constraintStart_toStartOf="@id/usernameTv"
+            app:layout_constraintTop_toBottomOf="@id/callerId"
+            tools:text="Support" />
+
+        <TextView
+            android:id="@+id/callerId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+62-8132-422-475"
+            android:textSize="16dp"
+            android:visibility="visible"
+            app:layout_constraintStart_toStartOf="@id/usernameTv"
+            app:layout_constraintTop_toBottomOf="@id/usernameTv" />
+
+        <TextView
+            android:id="@+id/callDateTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:text="2024-09-26 15:58:17"
+            android:textSize="12dp"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/usernameTv" />
+
+        <TextView
+            android:id="@+id/callDurationTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:text="20 seconds"
+            android:textSize="12dp"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/callDateTv" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

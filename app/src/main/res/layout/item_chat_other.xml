@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:paddingBottom="8dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/item_receiver"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/ivMessenger"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/circle_background"
+            android:backgroundTint="@color/faded_black"
+            android:src="@drawable/sharp_person_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/messageHolder"
+            app:layout_constraintStart_toEndOf="@+id/ivMessenger"
+            app:layout_constraintTop_toTopOf="@+id/ivMessenger"
+            tools:text="FirstName LastName" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/messageHolder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/name"
+            app:layout_constraintTop_toBottomOf="@id/name">
+
+            <TextView
+                android:id="@+id/msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/rounded_message_gray_light"
+                android:maxWidth="250dp"
+                android:padding="10dp"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Neo has joined the group"
+                tools:textColor="@color/black"
+                tools:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/icMediaMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="5dp"
+                android:src="@drawable/message_play_icon"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/ivMessage"
+                app:layout_constraintEnd_toEndOf="@id/ivMessage"
+                app:layout_constraintStart_toStartOf="@id/ivMessage"
+                app:layout_constraintTop_toTopOf="@id/ivMessage" />
+
+            <ImageView
+                android:id="@+id/ivMessage"
+                android:layout_width="150dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/rounded_message_gray_light"
+                android:padding="5dp"
+                android:scaleType="centerCrop"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@android:color/white"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/tes"
+                tools:text="This is a message"
+                tools:visibility="gone" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/ivAudioPlayer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="gone">
+
+                <ImageView
+                    android:layout_width="200dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/rounded_message_gray_light"
+                    android:padding="10dp"
+                    android:scaleType="fitCenter"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@android:color/white"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:visibility="visible" />
+
+                <ImageView
+                    android:id="@+id/voiceIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:background="@drawable/rounded_background_white"
+                    android:backgroundTint="@color/message_gray"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_mic_on"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:text="Voice Message"
+                    android:textColor="@color/black"
+                    app:layout_constraintBottom_toBottomOf="@id/voiceIcon"
+                    app:layout_constraintStart_toEndOf="@id/voiceIcon"
+                    app:layout_constraintTop_toTopOf="@id/voiceIcon" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <TextView
+            android:id="@+id/tvReadStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="4dp"
+            android:maxLines="2"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/tvTimestamp"
+            app:layout_constraintStart_toEndOf="@+id/messageHolder"
+            tools:text="Seen" />
+
+        <TextView
+            android:id="@+id/tvTimestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="4dp"
+            android:maxLines="2"
+            android:textColor="@color/message_gray"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/messageHolder"
+            app:layout_constraintStart_toEndOf="@+id/messageHolder"
+            tools:text="Just Now" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

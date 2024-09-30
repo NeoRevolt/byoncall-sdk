@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true"
+    tools:context=".ui.HistoryCallActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/incomingCallLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:background="@color/dm_dark_blue"
+        android:elevation="5dp"
+        android:paddingBottom="10dp"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <LinearLayout
+            android:id="@+id/textLinearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/callTypeIconIv"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/video_ic_filled_blue" />
+
+            <TextView
+                android:id="@+id/incomingCallTitleTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Incoming Voice call"
+                android:textColor="@color/gray"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/dotIv"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_marginStart="5dp"
+                android:background="@drawable/ic_online"
+                android:backgroundTint="#C1C1C1"
+                android:gravity="center"
+                app:layout_constraintBottom_toBottomOf="@id/incomingCallTitleTv"
+                app:layout_constraintStart_toEndOf="@id/incomingCallTitleTv"
+                app:layout_constraintTop_toTopOf="@id/incomingCallTitleTv" />
+
+            <TextView
+                android:id="@+id/dateTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:gravity="center"
+                android:text="now"
+                android:textColor="@color/message_gray"
+                app:layout_constraintBottom_toBottomOf="@id/incomingCallTitleTv"
+                app:layout_constraintStart_toEndOf="@id/dotIv"
+                app:layout_constraintTop_toTopOf="@id/incomingCallTitleTv" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/incomingCallCallerTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textLinearLayout"
+            tools:text="DartMedia demo" />
+
+        <ImageView
+            android:id="@+id/incomingCallCallerPicture"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/circle_background"
+            android:scaleType="centerCrop"
+            android:src="@drawable/asset_person_ic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/incomingCallCallerTv" />
+
+        <TextView
+            android:id="@+id/incomingCallIntentTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:maxLength="37"
+            android:text="Ingin menginfokan DartMedia demo call"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/incomingCallCallerPicture" />
+
+        <ImageView
+            android:id="@+id/callMeLaterButton"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="60dp"
+            android:background="@drawable/circle_background"
+            android:backgroundTint="@color/dm_dimmed_blue"
+            android:elevation="5dp"
+            android:padding="22dp"
+            android:src="@drawable/dm_restore"
+            android:windowSoftInputMode="adjustNothing"
+            app:layout_constraintBottom_toTopOf="@id/declineButton"
+            app:layout_constraintEnd_toEndOf="@id/declineButton"
+            app:layout_constraintStart_toStartOf="@id/declineButton" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Call Me Later"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="@id/callMeLaterButton"
+            app:layout_constraintStart_toStartOf="@id/callMeLaterButton"
+            app:layout_constraintTop_toBottomOf="@id/callMeLaterButton" />
+
+        <ImageView
+            android:id="@+id/remindMeButton"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="60dp"
+            android:background="@drawable/circle_background"
+            android:backgroundTint="@color/dm_dimmed_blue"
+            android:elevation="5dp"
+            android:padding="22dp"
+            android:src="@drawable/dm_alarm"
+            android:windowSoftInputMode="adjustNothing"
+            app:layout_constraintBottom_toTopOf="@id/acceptButton"
+            app:layout_constraintEnd_toEndOf="@id/acceptButton"
+            app:layout_constraintStart_toStartOf="@id/acceptButton" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Remind Me"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="@id/remindMeButton"
+            app:layout_constraintStart_toStartOf="@id/remindMeButton"
+            app:layout_constraintTop_toBottomOf="@id/remindMeButton" />
+
+
+        <ImageView
+            android:id="@+id/acceptButton"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="60dp"
+            android:background="@drawable/circle_background"
+            android:backgroundTint="@color/dm_blue"
+            android:padding="30dp"
+            android:src="@drawable/dm_checklist"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Accept"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="@id/acceptButton"
+            app:layout_constraintStart_toStartOf="@id/acceptButton"
+            app:layout_constraintTop_toBottomOf="@id/acceptButton" />
+
+        <ImageView
+            android:id="@+id/declineButton"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginBottom="60dp"
+            android:background="@drawable/circle_background"
+            android:backgroundTint="@color/dm_red"
+            android:padding="30dp"
+            android:src="@drawable/dm_close"
+            android:windowSoftInputMode="adjustNothing"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Decline"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="@id/declineButton"
+            app:layout_constraintStart_toStartOf="@id/declineButton"
+            app:layout_constraintTop_toBottomOf="@id/declineButton" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/callHistoryTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginTop="50dp"
+        android:text="Call History"
+        android:textColor="@color/message_blue"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/callLogInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:hint="Search for name or phone"
+        app:endIconDrawable="@drawable/dm_search_blue"
+        app:endIconMode="custom"
+        app:endIconTint="#3CFFFFFF"
+        app:endIconTintMode="screen"
+        app:layout_constraintTop_toBottomOf="@id/callHistoryTitle">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/searchEditText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_logs"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/callLogInputLayout"
+        tools:listitem="@layout/item_call_log" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

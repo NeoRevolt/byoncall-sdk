@@ -1,0 +1,648 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.ChatActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/incomingCallLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:background="@color/dm_dark_blue"
+        android:elevation="5dp"
+        android:paddingBottom="10dp"
+        android:visibility="gone"
+        android:windowSoftInputMode="adjustNothing"
+        tools:visibility="visible">
+
+        <LinearLayout
+            android:id="@+id/textLinearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/callTypeIconIv"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/video_ic_filled_blue" />
+
+            <TextView
+                android:id="@+id/incomingCallTitleTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Incoming Voice call"
+                android:textColor="@color/gray"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/dotIv"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_marginStart="5dp"
+                android:background="@drawable/ic_online"
+                android:backgroundTint="#C1C1C1"
+                android:gravity="center"
+                app:layout_constraintBottom_toBottomOf="@id/incomingCallTitleTv"
+                app:layout_constraintStart_toEndOf="@id/incomingCallTitleTv"
+                app:layout_constraintTop_toTopOf="@id/incomingCallTitleTv" />
+
+            <TextView
+                android:id="@+id/dateTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:gravity="center"
+                android:text="now"
+                android:textColor="@color/message_gray"
+                app:layout_constraintBottom_toBottomOf="@id/incomingCallTitleTv"
+                app:layout_constraintStart_toEndOf="@id/dotIv"
+                app:layout_constraintTop_toTopOf="@id/incomingCallTitleTv" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/incomingCallCallerTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textLinearLayout"
+            tools:text="DartMedia demo" />
+
+        <ImageView
+            android:id="@+id/incomingCallCallerPicture"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/circle_background"
+            android:scaleType="centerCrop"
+            android:src="@drawable/asset_person_ic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/incomingCallCallerTv" />
+
+        <TextView
+            android:id="@+id/incomingCallIntentTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:maxLength="37"
+            android:text="Ingin menginfokan DartMedia demo call"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/incomingCallCallerPicture" />
+
+        <ImageView
+            android:id="@+id/callMeLaterButton"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="60dp"
+            android:background="@drawable/circle_background"
+            android:backgroundTint="@color/dm_dimmed_blue"
+            android:elevation="5dp"
+            android:padding="22dp"
+            android:src="@drawable/dm_restore"
+            android:windowSoftInputMode="adjustNothing"
+            app:layout_constraintBottom_toTopOf="@id/declineButton"
+            app:layout_constraintEnd_toEndOf="@id/declineButton"
+            app:layout_constraintStart_toStartOf="@id/declineButton" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Call Me Later"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="@id/callMeLaterButton"
+            app:layout_constraintStart_toStartOf="@id/callMeLaterButton"
+            app:layout_constraintTop_toBottomOf="@id/callMeLaterButton" />
+
+        <ImageView
+            android:id="@+id/remindMeButton"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="60dp"
+            android:background="@drawable/circle_background"
+            android:backgroundTint="@color/dm_dimmed_blue"
+            android:elevation="5dp"
+            android:padding="22dp"
+            android:src="@drawable/dm_alarm"
+            android:windowSoftInputMode="adjustNothing"
+            app:layout_constraintBottom_toTopOf="@id/acceptButton"
+            app:layout_constraintEnd_toEndOf="@id/acceptButton"
+            app:layout_constraintStart_toStartOf="@id/acceptButton" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Remind Me"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="@id/remindMeButton"
+            app:layout_constraintStart_toStartOf="@id/remindMeButton"
+            app:layout_constraintTop_toBottomOf="@id/remindMeButton" />
+
+
+        <ImageView
+            android:id="@+id/acceptButton"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="60dp"
+            android:background="@drawable/circle_background"
+            android:backgroundTint="@color/dm_blue"
+            android:padding="30dp"
+            android:src="@drawable/dm_checklist"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Accept"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="@id/acceptButton"
+            app:layout_constraintStart_toStartOf="@id/acceptButton"
+            app:layout_constraintTop_toBottomOf="@id/acceptButton" />
+
+        <ImageView
+            android:id="@+id/declineButton"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginBottom="60dp"
+            android:background="@drawable/circle_background"
+            android:backgroundTint="@color/dm_red"
+            android:padding="30dp"
+            android:src="@drawable/dm_close"
+            android:windowSoftInputMode="adjustNothing"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Decline"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="@id/declineButton"
+            app:layout_constraintStart_toStartOf="@id/declineButton"
+            app:layout_constraintTop_toBottomOf="@id/declineButton" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/profileBar"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/message_blue_medium"
+        android:elevation="2dp">
+
+        <ImageView
+            android:id="@+id/backBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:padding="12dp"
+            android:src="@drawable/back_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/profileImageView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/profileImageView"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/circle_background"
+            android:backgroundTint="@color/faded_white"
+            android:padding="5dp"
+            android:src="@drawable/sharp_person_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/usernameTv"
+            app:layout_constraintStart_toEndOf="@id/backBtn"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/usernameTv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="User B"
+            android:textColor="@color/white"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/profileImageView"
+            app:layout_constraintTop_toTopOf="@id/profileImageView" />
+
+
+        <ImageView
+            android:id="@+id/videoCallBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="20dp"
+            android:padding="8dp"
+            android:src="@drawable/asset_startvideo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <ImageView
+            android:id="@+id/audioCallBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="20dp"
+            android:padding="9dp"
+            android:src="@drawable/asset_startcall"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/videoCallBtn"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/phoneTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="demo"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@id/usernameTv"
+            app:layout_constraintTop_toBottomOf="@id/usernameTv" />
+
+        <ImageView
+            android:id="@+id/statusIv"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="3dp"
+            android:src="@drawable/ic_online"
+            app:layout_constraintBottom_toBottomOf="@id/usernameTv"
+            app:layout_constraintStart_toEndOf="@id/usernameTv"
+            app:layout_constraintTop_toTopOf="@id/usernameTv" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/attachedCard"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/messageBar"
+        android:backgroundTint="@color/white"
+        android:elevation="15dp"
+        android:visibility="gone"
+        app:cardCornerRadius="0dp"
+        tools:visibility="gone">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="1dp">
+
+            <ImageView
+                android:id="@+id/attachedCardCloseBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/circle_background"
+                android:backgroundTint="@color/red_offline"
+                android:elevation="1dp"
+                android:padding="10dp"
+                android:src="@drawable/close_24"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/clicksendTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:elevation="1dp"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="File.jpg" />
+
+            <ImageView
+                android:id="@+id/attachedIv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/tes"
+                tools:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/attachedFileIv"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/ic_mic_on_blue"
+                tools:visibility="visible" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/messageBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:elevation="2dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:paddingHorizontal="5dp"
+            android:paddingTop="1dp"
+            android:paddingBottom="5dp"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <EditText
+                android:id="@+id/messageEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_editext_white"
+                android:elevation="3dp"
+                android:hint="Type a message..."
+                android:inputType="text"
+                android:minHeight="48dp"
+                android:padding="16dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/message_gray"
+                android:textSize="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/sendButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/addAttachment"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:elevation="3dp"
+                android:enabled="false"
+                android:padding="15dp"
+                android:src="@drawable/asset_attach_blue"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/messageEditText"
+                app:layout_constraintEnd_toEndOf="@id/messageEditText"
+                app:layout_constraintTop_toTopOf="@id/messageEditText" />
+
+            <ImageView
+                android:id="@+id/sendButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/circle_background"
+                android:backgroundTint="@color/message_blue"
+                android:elevation="3dp"
+                android:enabled="false"
+                android:padding="12dp"
+                android:src="@drawable/asset_send_ic"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/voiceRecButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:backgroundTint="@color/message_blue"
+                android:elevation="4dp"
+                android:enabled="false"
+                android:padding="12dp"
+                android:src="@drawable/ic_mic_on_blue"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/addAttachment"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/attachMenuList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@color/white"
+            android:paddingBottom="15dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/linearLayout"
+            tools:visibility="gone">
+
+            <ImageView
+                android:id="@+id/attachButton"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:layout_margin="30dp"
+                android:background="@drawable/rounded_background_white"
+                android:backgroundTint="@color/white"
+                android:elevation="3dp"
+                android:padding="18dp"
+                android:src="@drawable/asset_image_file_ic"
+                app:layout_constraintBottom_toBottomOf="@+id/attachButtonVideo"
+                app:layout_constraintEnd_toStartOf="@id/attachButtonVideo"
+                app:layout_constraintTop_toTopOf="@+id/attachButtonVideo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp"
+                android:elevation="5dp"
+                android:text="Image"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toEndOf="@id/attachButton"
+                app:layout_constraintStart_toStartOf="@id/attachButton"
+                app:layout_constraintTop_toBottomOf="@id/attachButton" />
+
+            <ImageView
+                android:id="@+id/attachButtonVideo"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:background="@drawable/rounded_background_white"
+                android:backgroundTint="@color/white"
+                android:elevation="3dp"
+                android:padding="18dp"
+                android:src="@drawable/asset_video_file_ic"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp"
+                android:elevation="5dp"
+                android:text="File/Document"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toEndOf="@id/attachButtonFile"
+                app:layout_constraintStart_toStartOf="@id/attachButtonFile"
+                app:layout_constraintTop_toBottomOf="@id/attachButtonFile" />
+
+            <ImageView
+                android:id="@+id/attachButtonFile"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:layout_margin="30dp"
+                android:background="@drawable/rounded_background_white"
+                android:backgroundTint="@color/white"
+                android:elevation="3dp"
+                android:padding="15dp"
+                android:src="@drawable/asset_document_file_ic"
+                app:layout_constraintBottom_toBottomOf="@+id/attachButtonVideo"
+                app:layout_constraintStart_toEndOf="@id/attachButtonVideo"
+                app:layout_constraintTop_toTopOf="@+id/attachButtonVideo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp"
+                android:elevation="5dp"
+                android:text="Video"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toEndOf="@id/attachButtonVideo"
+                app:layout_constraintStart_toStartOf="@id/attachButtonVideo"
+                app:layout_constraintTop_toBottomOf="@id/attachButtonVideo" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/attachAudioMenu"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:background="@color/white"
+            android:paddingBottom="15dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/linearLayout"
+            tools:visibility="visible">
+
+            <View
+                android:id="@+id/visualizerAudio"
+                android:layout_width="0dp"
+                android:layout_height="90dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/startVoiceRecord"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/circle_background"
+                android:backgroundTint="@color/red"
+                android:padding="20dp"
+                android:src="@drawable/circle_background"
+                app:layout_constraintBottom_toBottomOf="@id/visualizerAudio"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/visualizerAudio"
+                tools:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/stopVoiceRecord"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/circle_background"
+                android:backgroundTint="@color/message_blue"
+                android:elevation="2dp"
+                android:padding="10dp"
+                android:src="@drawable/ic_done_24"
+                android:visibility="gone"
+                android:windowSoftInputMode="adjustNothing"
+                app:layout_constraintBottom_toBottomOf="@id/visualizerAudio"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/visualizerAudio"
+                tools:visibility="gone" />
+
+            <TextView
+                android:id="@+id/voiceTimeStamp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="00:00:00"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/visualizerAudio"
+                tools:text="00:01:00" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:elevation="15dp"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvChat"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/messageBar"
+        android:layout_below="@id/profileBar"
+        android:background="@color/white"
+        tools:listitem="@layout/item_chat_self" />
+
+</RelativeLayout>

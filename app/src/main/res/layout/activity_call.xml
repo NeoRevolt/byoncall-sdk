@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true"
+    tools:context=".ui.CallActivity">
+
+    <org.webrtc.SurfaceViewRenderer
+        android:id="@+id/remoteView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <org.webrtc.SurfaceViewRenderer
+        android:id="@+id/localView"
+        android:layout_width="100dp"
+        android:layout_height="150dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@id/controlPanelLayout"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/titleLayout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/faded_black"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/callTimerTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Connecting..."
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:drawableStartCompat="@drawable/ic_record"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/callTitleTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="User A" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/controlPanelLayout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/faded_black"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/endCallButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_end_call" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/toggleMicrophoneButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_mic_off" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/toggleCameraButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_camera_off"
+            android:visibility="gone" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/switchCameraButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_switch_camera" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/toggleAudioDevice"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_ear"
+            android:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/screenShareButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_screen_share" />
+
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/voiceCallLayouts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        android:elevation="5dp"
+        android:paddingBottom="10dp"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <LinearLayout
+            android:id="@+id/textLinearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginTop="50dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@id/voiceCallCallerName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="VOIP"
+                android:textColor="@color/gray"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/voiceCallStatusLinear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="@id/voiceCallCallerImage"
+            app:layout_constraintStart_toStartOf="@id/voiceCallCallerImage"
+            app:layout_constraintTop_toBottomOf="@id/voiceCallCallerImage">
+
+            <ImageView
+                android:id="@+id/voiceCallStatusIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/ic_record" />
+
+            <TextView
+                android:id="@+id/voiceCallStatusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/gray"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Connecting..." />
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/voiceCallCallerName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/voiceCallCallerImage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textLinearLayout"
+            tools:text="DartMedia demo" />
+
+        <ImageView
+            android:id="@+id/voiceCallCallerImage"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/circle_background"
+            android:scaleType="centerCrop"
+            android:src="@drawable/asset_person_ic"
+            app:layout_constraintBottom_toTopOf="@id/voiceCallStatusLinear"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/voiceCallCallerName" />
+
+        <ImageView
+            android:id="@+id/voiceCallMuteButton"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/circle_background"
+            android:backgroundTint="@color/dm_dimmed_blue"
+            android:padding="18dp"
+            android:src="@drawable/ic_mic_on"
+            app:layout_constraintBottom_toTopOf="@id/voiceCallEndCallButton"
+            app:layout_constraintEnd_toEndOf="@id/voiceCallEndCallButton"
+            app:layout_constraintStart_toStartOf="@id/voiceCallEndCallButton"
+            app:layout_constraintTop_toBottomOf="@id/voiceCallStatusLinear" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Mic"
+            android:textColor="@color/white"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="@id/voiceCallMuteButton"
+            app:layout_constraintStart_toStartOf="@id/voiceCallMuteButton"
+            app:layout_constraintTop_toBottomOf="@id/voiceCallMuteButton" />
+
+        <ImageView
+            android:id="@+id/voiceCallEndCallButton"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:layout_marginBottom="60dp"
+            android:background="@drawable/circle_background"
+            android:backgroundTint="@color/dm_red"
+            android:padding="20dp"
+            android:src="@drawable/ic_baseline_call_end_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="End Call"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="@id/voiceCallEndCallButton"
+            app:layout_constraintStart_toStartOf="@id/voiceCallEndCallButton"
+            app:layout_constraintTop_toBottomOf="@id/voiceCallEndCallButton" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
