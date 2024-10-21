@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace 'com.dartmedia.brandedsdk'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         minSdk 24
@@ -46,6 +46,11 @@ dependencies {
 
     // WebRTC (JCenter)
     implementation 'org.webrtc:google-webrtc:1.0.32006'
+
+    // Socket io
+    implementation('io.socket:socket.io-client:2.0.0') {
+        exclude group: 'org.json', module: 'json'
+    }
 
     // GSON
     implementation 'com.google.code.gson:gson:2.10.1'

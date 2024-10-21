@@ -26,14 +26,20 @@ import org.webrtc.SurfaceTextureHelper
 import org.webrtc.SurfaceViewRenderer
 import org.webrtc.VideoCapturer
 import org.webrtc.VideoTrack
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class WebRTCClientSdk(
+
+@Singleton
+class WebRTCClientSdk @Inject constructor(
     private val context: Context,
 ) {
 
     var listener: Listener? = null
 
-    private lateinit var username: String
+    private lateinit var myPhone: String
+    private var localTrackId = ""
+    private var localStreamId = ""
 
     // Webrtc variables
     private val eglBaseContext = EglBase.create().eglBaseContext
@@ -41,7 +47,6 @@ class WebRTCClientSdk(
     private var peerConnection: PeerConnection? = null
 
     private val rtcConfig by lazy { initRTCConfig() }
-
 
     private val iceServer = listOf(
         PeerConnection.IceServer.builder("turn:103.39.68.184:3478")
@@ -69,8 +74,6 @@ class WebRTCClientSdk(
     private lateinit var localSurfaceView: SurfaceViewRenderer
     private lateinit var remoteSurfaceView: SurfaceViewRenderer
     private var localStream: MediaStream? = null
-    private var localTrackId = ""
-    private var localStreamId = ""
     private var localAudioTrack: AudioTrack? = null
     private var localVideoTrack: VideoTrack? = null
 
@@ -118,7 +121,7 @@ class WebRTCClientSdk(
         username: String, observer: MyPeerObserver
     ) {
         //TODO(Zal): username or IDs must not have whitespace !
-        this.username = username
+        this.myPhone = username
         localTrackId = "${username}_track"
         localStreamId = "${username}_stream"
         peerConnection = createPeerConnection(observer)
@@ -140,7 +143,7 @@ class WebRTCClientSdk(
                         listener?.onTransferEventToSocket(
                             SocketDataModel(
                                 type = SocketDataTypeEnum.Offer,
-                                senderId = username,
+                                senderId = myPhone,
                                 receiverId = target,
                                 data = desc?.description
                             )
@@ -167,7 +170,7 @@ class WebRTCClientSdk(
                         listener?.onTransferEventToSocket(
                             SocketDataModel(
                                 type = SocketDataTypeEnum.Answer,
-                                senderId = username,
+                                senderId = myPhone,
                                 receiverId = target,
                                 data = desc?.description
                             )
@@ -190,7 +193,7 @@ class WebRTCClientSdk(
         listener?.onTransferEventToSocket(
             SocketDataModel(
                 type = SocketDataTypeEnum.IceCandidates,
-                senderId = username,
+                senderId = myPhone,
                 receiverId = target,
                 data = iceCandidate
             )
