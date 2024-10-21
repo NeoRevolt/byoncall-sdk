@@ -38,6 +38,10 @@ class WebRTCRepository @Inject constructor(
         status(UserStatusEnum.IN_CALL)
     }
 
+    fun connectSocket(socketUrl: String, myPhone: String) {
+        socketClientSdk.connectSocket(myPhone = myPhone, socketUrl = socketUrl)
+    }
+
     fun disconnectSocket(function: () -> Unit) {
         socketClientSdk.disconnectSocket()
     }
@@ -246,7 +250,7 @@ class WebRTCRepository @Inject constructor(
 
     }
 
-    fun sendRejectCall(socketDataModel: SocketDataModel) {
+    fun sendRejectCall(socketDataModel: com.dartmedia.brandedlibrary.model.SocketDataModel) {
         onTransferEventToSocket(
             socketDataModel.copy(
                 senderId = socketDataModel.receiverId,
@@ -276,10 +280,10 @@ class WebRTCRepository @Inject constructor(
         webRTCClientSdk.setPermissionIntent(screenPermissionIntent)
     }
 
-    fun toggleScreenShare(isStarting: Boolean){
-        if (isStarting){
+    fun toggleScreenShare(isStarting: Boolean) {
+        if (isStarting) {
             webRTCClientSdk.startScreenCapturing()
-        }else{
+        } else {
             webRTCClientSdk.stopScreenCapturing()
         }
     }
