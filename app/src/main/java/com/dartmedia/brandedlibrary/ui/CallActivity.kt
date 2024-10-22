@@ -15,16 +15,16 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.dartmedia.brandedlibrary.R
 import com.dartmedia.brandedlibrary.databinding.ActivityCallBinding
-import com.dartmedia.brandedlibrary.model.UserStatusEnum
-import com.dartmedia.brandedlibrary.repository.MainRepository
-import com.dartmedia.brandedlibrary.service.MainService
-import com.dartmedia.brandedlibrary.service.MainServiceRepository
 import com.dartmedia.brandedlibrary.ui.viewmodel.CallLogViewModel
 import com.dartmedia.brandedlibrary.ui.viewmodel.ViewModelFactory
-import com.dartmedia.brandedlibrary.utils.audio.manager.RTCAudioManager
 import com.dartmedia.brandedlibrary.utils.date.DateUtils.getCurrentDateDetailed
 import com.dartmedia.brandedlibrary.utils.extension.convertToHumanTime
 import com.dartmedia.brandedlibrary.utils.image.WhiteBackgroundTransformation
+import com.dartmedia.brandedsdk.model.UserStatusEnum
+import com.dartmedia.brandedsdk.repository.WebRTCRepository
+import com.dartmedia.brandedsdk.service.MainService
+import com.dartmedia.brandedsdk.service.MainServiceRepository
+import com.dartmedia.brandedsdk.utils.audio.manager.RTCAudioManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -58,7 +58,7 @@ class CallActivity : AppCompatActivity(), MainService.EndCallListener {
     lateinit var serviceRepository: MainServiceRepository
 
     @Inject
-    lateinit var mainRepository: MainRepository
+    lateinit var webRTCRepository: WebRTCRepository
 
 //    @Inject
 //    lateinit var mediaRecorderWrapper: MediaRecorderWrapper
@@ -132,7 +132,7 @@ class CallActivity : AppCompatActivity(), MainService.EndCallListener {
 
         target?.let { target ->
             targetName?.let { targetName ->
-                mainRepository.observeTargetContact(target) {
+                webRTCRepository.observeTargetContact(target) {
                     when (it) {
 
                         UserStatusEnum.ONLINE -> {

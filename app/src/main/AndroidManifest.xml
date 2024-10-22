@@ -48,10 +48,10 @@
             android:name=".ui.CallActivity"
             android:exported="false" />
 
-        <receiver android:name=".service.MainServiceReceiver" />
+        <receiver android:name="com.dartmedia.brandedsdk.service.MainServiceReceiver" />
 
         <service
-            android:name=".service.MainService"
+            android:name="com.dartmedia.brandedsdk.service.MainService"
             android:foregroundServiceType="mediaProjection" />
     </application>
 

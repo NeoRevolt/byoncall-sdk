@@ -18,13 +18,13 @@ import com.dartmedia.brandedlibrary.R
 import com.dartmedia.brandedlibrary.adapter.ChatAdapter
 import com.dartmedia.brandedlibrary.databinding.ActivityMainBinding
 import com.dartmedia.brandedlibrary.model.ChatModel
-import com.dartmedia.brandedlibrary.model.SocketDataModel
-import com.dartmedia.brandedlibrary.model.SocketDataTypeEnum
-import com.dartmedia.brandedlibrary.repository.MainRepository
-import com.dartmedia.brandedlibrary.service.MainService
-import com.dartmedia.brandedlibrary.service.MainServiceRepository
-import com.dartmedia.brandedlibrary.socket.SocketClient
 import com.dartmedia.brandedlibrary.utils.image.WhiteBackgroundTransformation
+import com.dartmedia.brandedsdk.model.SocketDataModel
+import com.dartmedia.brandedsdk.model.SocketDataTypeEnum
+import com.dartmedia.brandedsdk.repository.WebRTCRepository
+import com.dartmedia.brandedsdk.service.MainService
+import com.dartmedia.brandedsdk.service.MainServiceRepository
+import com.dartmedia.brandedsdk.socket.SocketClientSdk
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -43,10 +43,10 @@ import javax.inject.Inject
 class ChatActivity : AppCompatActivity(), MainService.Listener {
 
     @Inject
-    lateinit var socketClient: SocketClient
+    lateinit var socketClient: SocketClientSdk
 
     @Inject
-    lateinit var mainRepository: MainRepository
+    lateinit var mainRepository: WebRTCRepository
 
     @Inject
     lateinit var mainServiceRepository: MainServiceRepository
@@ -85,7 +85,7 @@ class ChatActivity : AppCompatActivity(), MainService.Listener {
         if (myPhone.isEmpty() || myPhone == "") {
             finish()
         } else {
-            mainRepository.connectSocket(myPhone)
+            mainRepository.connectSocket(socketUrl = SOCKET_URL, myPhone)
             MainService.listener = this
             mainServiceRepository.startService(myPhone)
             chatAdapter = ChatAdapter()
@@ -187,7 +187,7 @@ class ChatActivity : AppCompatActivity(), MainService.Listener {
     }
 
     private fun sendChatMessage(chatModel: ChatModel) {
-        socketClient.sendMessageToSocket(
+        socketClient.sendEventToSocket(
             SocketDataModel(
                 type = SocketDataTypeEnum.StartChatting,
                 senderId = myPhone,
@@ -428,7 +428,7 @@ class ChatActivity : AppCompatActivity(), MainService.Listener {
     }
 
     override fun onDestroy() {
-        socketClient.disconnectSocket() {}
+        socketClient.disconnectSocket()
         super.onDestroy()
     }
 
@@ -439,6 +439,9 @@ class ChatActivity : AppCompatActivity(), MainService.Listener {
         const val CALL_MESSAGE = "callMessage"
         const val MY_IMAGE_URL = "myImageUrl"
         const val TAG = "ChatActivity"
+
+        const val SOCKET_URL = "http://103.39.68.184:8901/socket/private"
+
     }
 
 

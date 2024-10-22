@@ -18,15 +18,15 @@ import com.bumptech.glide.request.RequestOptions
 import com.dartmedia.brandedlibrary.R
 import com.dartmedia.brandedlibrary.adapter.CallLogAdapter
 import com.dartmedia.brandedlibrary.databinding.ActivityHistoryCallBinding
-import com.dartmedia.brandedlibrary.model.SocketDataModel
-import com.dartmedia.brandedlibrary.model.SocketDataTypeEnum
-import com.dartmedia.brandedlibrary.repository.MainRepository
-import com.dartmedia.brandedlibrary.service.MainService
-import com.dartmedia.brandedlibrary.service.MainServiceRepository
-import com.dartmedia.brandedlibrary.socket.SocketClient
 import com.dartmedia.brandedlibrary.ui.viewmodel.HistoryCallViewModel
 import com.dartmedia.brandedlibrary.ui.viewmodel.ViewModelFactory
 import com.dartmedia.brandedlibrary.utils.image.WhiteBackgroundTransformation
+import com.dartmedia.brandedsdk.model.SocketDataModel
+import com.dartmedia.brandedsdk.model.SocketDataTypeEnum
+import com.dartmedia.brandedsdk.repository.WebRTCRepository
+import com.dartmedia.brandedsdk.service.MainService
+import com.dartmedia.brandedsdk.service.MainServiceRepository
+import com.dartmedia.brandedsdk.socket.SocketClientSdk
 import com.dartmedia.network.CallHistoryData
 import com.dartmedia.network.CallHistoryResponse
 import com.dartmedia.network.RetrofitClient
@@ -48,10 +48,10 @@ import javax.inject.Inject
 class HistoryCallActivity : AppCompatActivity(), MainService.Listener {
 
     @Inject
-    lateinit var socketClient: SocketClient
+    lateinit var socketClient: SocketClientSdk
 
     @Inject
-    lateinit var mainRepository: MainRepository
+    lateinit var mainRepository: WebRTCRepository
 
     @Inject
     lateinit var mainServiceRepository: MainServiceRepository
@@ -85,7 +85,7 @@ class HistoryCallActivity : AppCompatActivity(), MainService.Listener {
         if (myPhone.isEmpty() || myPhone == "") {
             finish()
         } else {
-            mainRepository.connectSocket(myPhone)
+            mainRepository.connectSocket(socketUrl = SOCKET_URL, myPhone)
             MainService.listener = this
             mainServiceRepository.startService(myPhone)
         }
@@ -354,12 +354,13 @@ class HistoryCallActivity : AppCompatActivity(), MainService.Listener {
     }
 
     override fun onDestroy() {
-        socketClient.disconnectSocket() {}
+        socketClient.disconnectSocket()
         super.onDestroy()
     }
 
     companion object {
         var TAG = HistoryCallActivity::class.java.simpleName
         const val MY_PHONE = "myPhoneNumber"
+        const val SOCKET_URL = "http://103.39.68.184:8901/socket/private"
     }
 }

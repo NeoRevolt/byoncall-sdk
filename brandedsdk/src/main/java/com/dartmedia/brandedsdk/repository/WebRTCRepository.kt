@@ -250,7 +250,7 @@ class WebRTCRepository @Inject constructor(
 
     }
 
-    fun sendRejectCall(socketDataModel: com.dartmedia.brandedlibrary.model.SocketDataModel) {
+    fun sendRejectCall(socketDataModel: SocketDataModel) {
         onTransferEventToSocket(
             socketDataModel.copy(
                 senderId = socketDataModel.receiverId,

@@ -50,11 +50,12 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
 
+    implementation project(':brandedsdk')
 
     // Socket io
-    implementation('io.socket:socket.io-client:2.0.0') {
-        exclude group: 'org.json', module: 'json'
-    }
+//    implementation('io.socket:socket.io-client:2.0.0') {
+//        exclude group: 'org.json', module: 'json'
+//    }
 
     // Web RTC  TODO(Zal): current WebRTC Library still in JCenter, find the newest one
     implementation 'org.webrtc:google-webrtc:1.0.32006'
