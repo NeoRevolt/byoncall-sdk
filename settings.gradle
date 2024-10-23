@@ -15,6 +15,6 @@ dependencyResolutionManagement {
 
     }
 }
-rootProject.name = "BrandedLibrary"
+rootProject.name = "BrandedLibraryClient"
 include ':app'
 include ':brandedsdk'

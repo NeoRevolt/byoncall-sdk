@@ -1,4 +1,4 @@
-package com.dartmedia.brandedlibrary.utils.date
+package com.dartmedia.brandedsdk.utils.date
 
 import java.text.SimpleDateFormat
 import java.util.Calendar

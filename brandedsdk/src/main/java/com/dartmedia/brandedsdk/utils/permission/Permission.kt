@@ -1,4 +1,4 @@
-package com.dartmedia.brandedlibrary.utils.permission
+package com.dartmedia.brandedsdk.utils.permission
 
 import android.Manifest.permission.*
 import android.os.Build

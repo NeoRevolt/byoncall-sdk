@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace 'com.dartmedia.brandedlibrary'
+    namespace 'com.dartmedia.brandedlibraryclient'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.dartmedia.brandedlibrary"
+        applicationId "com.dartmedia.brandedlibraryclient"
         minSdk 24
         targetSdk 33
         versionCode 1
@@ -50,17 +50,15 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
 
+    // Library
     implementation project(':brandedsdk')
+    implementation 'org.webrtc:google-webrtc:1.0.32006' // WebRTC
+    implementation "com.google.dagger:hilt-android:2.44" // Hilt Dagger
+    kapt "com.google.dagger:hilt-compiler:2.44" // Hilt Compiler
 
-    // Socket io
 //    implementation('io.socket:socket.io-client:2.0.0') {
 //        exclude group: 'org.json', module: 'json'
 //    }
-
-    // Web RTC  TODO(Zal): current WebRTC Library still in JCenter, find the newest one
-    implementation 'org.webrtc:google-webrtc:1.0.32006'
-    // alternative library
-    // implementation 'com.mesibo.api:webrtc:1.0.5'
 
     // Gson
     implementation 'com.google.code.gson:gson:2.10'
@@ -79,10 +77,6 @@ dependencies {
     // Serialization
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2"
 
-    // Hilt Dagger
-    implementation "com.google.dagger:hilt-android:2.44"
-    kapt "com.google.dagger:hilt-compiler:2.44"
-
     // Permissions
     implementation 'com.guolindev.permissionx:permissionx:1.6.1'
 
@@ -90,11 +84,11 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.15.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.15.1'
 
-    // Phone code picker & verification
-    implementation 'com.hbb20:ccp:2.5.2'
-    implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.54'
-
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+    // Phone code picker & verification
+    implementation 'com.hbb20:ccp:2.5.2'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.54'
 }

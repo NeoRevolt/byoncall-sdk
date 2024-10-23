@@ -1,4 +1,4 @@
-package com.dartmedia.brandedlibrary.utils.recorder
+package com.dartmedia.brandedsdk.utils.recorder
 
 import android.content.Context
 import android.media.MediaRecorder

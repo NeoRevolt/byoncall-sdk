@@ -1,4 +1,5 @@
-package com.dartmedia.brandedlibrary.utils.permission
+package com.dartmedia.brandedsdk.utils.permission
+
 import android.app.AlertDialog
 import android.content.pm.PackageManager
 import androidx.activity.result.contract.ActivityResultContracts
