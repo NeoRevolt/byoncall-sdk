@@ -18,8 +18,9 @@ import com.dartmedia.brandedlibrary.databinding.ActivityCallBinding
 import com.dartmedia.brandedlibrary.ui.viewmodel.CallLogViewModel
 import com.dartmedia.brandedlibrary.ui.viewmodel.ViewModelFactory
 import com.dartmedia.brandedlibrary.utils.date.DateUtils.getCurrentDateDetailed
-import com.dartmedia.brandedlibrary.utils.extension.convertToHumanTime
+import com.dartmedia.brandedsdk.utils.extension.convertToHumanTime
 import com.dartmedia.brandedlibrary.utils.image.WhiteBackgroundTransformation
+import com.dartmedia.brandedsdk.contacts.ContactSaver
 import com.dartmedia.brandedsdk.model.UserStatusEnum
 import com.dartmedia.brandedsdk.repository.WebRTCRepository
 import com.dartmedia.brandedsdk.service.MainService
@@ -28,6 +29,7 @@ import com.dartmedia.brandedsdk.utils.audio.manager.RTCAudioManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -60,12 +62,18 @@ class CallActivity : AppCompatActivity(), MainService.EndCallListener {
     @Inject
     lateinit var webRTCRepository: WebRTCRepository
 
+    @Inject
+    lateinit var contactSaver: ContactSaver
+
 //    @Inject
 //    lateinit var mediaRecorderWrapper: MediaRecorderWrapper
 
     private lateinit var requestScreenCaptureLauncher: ActivityResultLauncher<Intent>
 
     private lateinit var binding: ActivityCallBinding
+
+    private val job = Job()
+    private val scope = CoroutineScope(Dispatchers.Main + job)
 
 
     override fun onStart() {
@@ -339,6 +347,13 @@ class CallActivity : AppCompatActivity(), MainService.EndCallListener {
     }
 
     override fun onCallEnded() {
+        scope.launch {
+            contactSaver.saveContactInfo(
+                displayName = targetName!!,
+                phoneNumber = target!!,
+                imageUrl = targetImgUrl
+            )
+        }
         finish()
     }
 

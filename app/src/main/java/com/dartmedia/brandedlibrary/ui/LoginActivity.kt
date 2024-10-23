@@ -6,8 +6,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.dartmedia.brandedlibrary.databinding.ActivityLoginBinding
-import com.dartmedia.brandedlibrary.utils.extension.getCameraAndMicPermission
 import com.dartmedia.brandedlibrary.utils.phone.PhoneNumberUtils
+import com.dartmedia.brandedsdk.utils.extension.getCameraAndMicPermission
 
 class LoginActivity : AppCompatActivity() {
 
