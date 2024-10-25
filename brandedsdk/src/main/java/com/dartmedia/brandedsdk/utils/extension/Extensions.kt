@@ -11,7 +11,9 @@ fun AppCompatActivity.getCameraAndMicPermission(success: () -> Unit) {
             android.Manifest.permission.RECORD_AUDIO,
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
             android.Manifest.permission.READ_CONTACTS,
-            android.Manifest.permission.WRITE_CONTACTS
+            android.Manifest.permission.WRITE_CONTACTS,
+            android.Manifest.permission.MODIFY_AUDIO_SETTINGS,
+            android.Manifest.permission.USE_SIP
         )
         .request { allGranted, _, _ ->
 

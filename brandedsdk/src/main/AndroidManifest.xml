@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission
@@ -17,19 +18,27 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <uses-permission android:name="android.permission.USE_SIP" />
+
+    <uses-feature
+        android:name="android.hardware.sip.voip"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.microphone"
+        android:required="true" />
+
 
     <application
         android:supportsRtl="true"
         android:usesCleartextTraffic="true">
 
-<!--        <receiver android:name=".service.MainServiceReceiver" />-->
+        <!--        <receiver android:name=".service.MainServiceReceiver" />-->
 
-<!--        <service-->
-<!--            android:name=".service.MainService"-->
-<!--            android:foregroundServiceType="mediaProjection" />-->
+        <!--        <service-->
+        <!--            android:name=".service.MainService"-->
+        <!--            android:foregroundServiceType="mediaProjection" />-->
 
     </application>
-
 
 
 </manifest>
