@@ -17,15 +17,15 @@ import com.dartmedia.brandedlibraryclient.R
 import com.dartmedia.brandedlibraryclient.databinding.ActivityCallBinding
 import com.dartmedia.brandedlibraryclient.ui.viewmodel.CallLogViewModel
 import com.dartmedia.brandedlibraryclient.ui.viewmodel.ViewModelFactory
-import com.dartmedia.brandedsdk.utils.date.DateUtils.getCurrentDateDetailed
-import com.dartmedia.brandedsdk.utils.extension.convertToHumanTime
-import com.dartmedia.brandedsdk.utils.image.WhiteBackgroundTransformation
-import com.dartmedia.brandedsdk.utils.contacts.ContactSaver
 import com.dartmedia.brandedsdk.model.UserStatusEnum
 import com.dartmedia.brandedsdk.repository.WebRTCRepository
 import com.dartmedia.brandedsdk.service.MainService
 import com.dartmedia.brandedsdk.service.MainServiceRepository
 import com.dartmedia.brandedsdk.utils.audio.manager.RTCAudioManager
+import com.dartmedia.brandedsdk.utils.contacts.ContactSaver
+import com.dartmedia.brandedsdk.utils.date.DateUtils.getCurrentDateDetailed
+import com.dartmedia.brandedsdk.utils.extension.convertToHumanTime
+import com.dartmedia.brandedsdk.utils.image.WhiteBackgroundTransformation
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -347,13 +347,6 @@ class CallActivity : AppCompatActivity(), MainService.EndCallListener {
     }
 
     override fun onCallEnded() {
-        scope.launch {
-            contactSaver.saveContactInfo(
-                displayName = targetName!!,
-                phoneNumber = target!!,
-                imageUrl = targetImgUrl
-            )
-        }
         finish()
     }
 

@@ -1,10 +1,11 @@
 package com.dartmedia.brandedsdk.utils.extension
 
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.permissionx.guolindev.PermissionX
 
-fun AppCompatActivity.getCameraAndMicPermission(success: () -> Unit) {
+fun AppCompatActivity.getCameraAndMicPermission(success: (Boolean) -> Unit) {
     PermissionX.init(this)
         .permissions(
             android.Manifest.permission.CAMERA,
@@ -15,11 +16,26 @@ fun AppCompatActivity.getCameraAndMicPermission(success: () -> Unit) {
             android.Manifest.permission.MODIFY_AUDIO_SETTINGS,
             android.Manifest.permission.USE_SIP
         )
-        .request { allGranted, _, _ ->
+        .request { allGranted, _, deniedList ->
 
             if (allGranted) {
-                success()
+                success(true)
+                Log.d("PermissionX", "All permission granted")
+            } else if (deniedList.contains(android.Manifest.permission.WRITE_CONTACTS) || deniedList.contains(
+                    android.Manifest.permission.READ_CONTACTS
+                )
+            ) {
+                success(false)
+                Log.e("PermissionX", "Contacts permission denied")
+                Toast.makeText(
+                    this,
+                    "Contact permission is required",
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
             } else {
+                success(false)
+                Log.e("PermissionX", "Permission denied")
                 Toast.makeText(
                     this,
                     "Camera, Mic and Storage permission is required",

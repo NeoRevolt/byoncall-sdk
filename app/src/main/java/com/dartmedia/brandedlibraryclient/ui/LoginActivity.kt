@@ -6,12 +6,27 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.dartmedia.brandedlibraryclient.databinding.ActivityLoginBinding
-import com.dartmedia.brandedsdk.utils.phone.PhoneNumberUtils
+import com.dartmedia.brandedsdk.utils.contacts.ContactSaver
 import com.dartmedia.brandedsdk.utils.extension.getCameraAndMicPermission
+import com.dartmedia.brandedsdk.utils.phone.PhoneNumberUtils
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
+
+    @Inject
+    lateinit var contactSaver: ContactSaver
+
+    private val job = Job()
+    private val scope = CoroutineScope(Dispatchers.Main + job)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,12 +49,21 @@ class LoginActivity : AppCompatActivity() {
                     )
                 ) {
                     //TODO
-                    getCameraAndMicPermission {
-                        val intent =
-                            Intent(this@LoginActivity, HistoryCallActivity::class.java).apply {
-                                putExtra(HistoryCallActivity.MY_PHONE, phoneNumberFull)
+                    getCameraAndMicPermission { allAllowed ->
+                        if (allAllowed) {
+                            scope.launch {
+                                contactSaver.saveContactInfo(
+                                    displayName = "DartMedia",
+                                    phoneNumber = "+6281905598599",
+                                    imageUrl = "https://dartmedia.co.id/images/logo_dartmedia.png"
+                                )
                             }
-                        startActivity(intent)
+                            val intent =
+                                Intent(this@LoginActivity, HistoryCallActivity::class.java).apply {
+                                    putExtra(HistoryCallActivity.MY_PHONE, phoneNumberFull)
+                                }
+                            startActivity(intent)
+                        }
                     }
                 } else {
                     Toast.makeText(
@@ -51,26 +75,6 @@ class LoginActivity : AppCompatActivity() {
                 }
 
             }
-
-//            // Set the selected item (so that it shows as active)
-//            bottomNavigation.selectedItemId = R.id.navigation_login
-//
-//            // Handle navigation item clicks
-//            bottomNavigation.setOnNavigationItemSelectedListener { item ->
-//                when (item.itemId) {
-//                    R.id.navigation_login -> {
-//                        true
-//                    }
-//
-//                    R.id.navigation_history -> {
-//                        startActivity(Intent(this@LoginActivity, HistoryCallActivity::class.java))
-//                        overridePendingTransition(0, 0)
-//                        true
-//                    }
-//
-//                    else -> false
-//                }
-//            }
         }
     }
 
