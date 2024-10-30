@@ -2,11 +2,16 @@ package com.dartmedia.brandedsdk.service
 
 import android.content.Context
 import android.content.Intent
-import javax.inject.Inject
 
-class MainServiceRepository @Inject constructor(
+class MainServiceRepository(
     private val context: Context
 ) {
+
+    companion object {
+        fun instance(context: Context): MainServiceRepository {
+            return MainServiceRepository(context)
+        }
+    }
 
     fun startService(username: String) {
         Thread {

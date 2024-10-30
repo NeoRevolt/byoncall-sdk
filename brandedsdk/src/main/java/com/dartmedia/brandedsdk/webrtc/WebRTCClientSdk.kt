@@ -26,14 +26,18 @@ import org.webrtc.SurfaceTextureHelper
 import org.webrtc.SurfaceViewRenderer
 import org.webrtc.VideoCapturer
 import org.webrtc.VideoTrack
-import javax.inject.Inject
-import javax.inject.Singleton
 
 
-@Singleton
-class WebRTCClientSdk @Inject constructor(
-    private val context: Context,
+class WebRTCClientSdk(
+    private val context: Context
 ) {
+
+    companion object {
+        val TAG = WebRTCClientSdk::class.java.simpleName.toString()
+        fun instance(context: Context): WebRTCClientSdk {
+            return WebRTCClientSdk(context)
+        }
+    }
 
     var listener: Listener? = null
 
@@ -242,10 +246,40 @@ class WebRTCClientSdk @Inject constructor(
 
     fun closeConnection() {
         try {
-            videoCapturer.dispose()
-            screenCapturer?.dispose()
-            localStream?.dispose()
-            peerConnection?.close()
+            videoCapturer.let {
+                try {
+                    it.stopCapture()
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error stopping video capture: $e")
+                }
+                it.dispose()
+            }
+            screenCapturer?.let {
+                try {
+                    it.stopCapture()
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error stopping screen capture: $e")
+                }
+                it.dispose()
+            }
+            localStream?.let {
+                try {
+                    it.videoTracks.forEach { videoTrack -> videoTrack.dispose() }
+                    it.audioTracks.forEach { audioTrack -> audioTrack.dispose() }
+                    it.removeTrack(localVideoTrack)
+                    it.dispose()
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error stopping local stream: $e")
+                }
+            }
+            peerConnection?.let {
+                try {
+                    it.close()
+                    it.dispose()
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error closing PeerConnection : $e")
+                }
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -392,10 +426,6 @@ class WebRTCClientSdk @Inject constructor(
                 Log.d(TAG, "onStop: permission of screen casting is stopped")
             }
         })
-    }
-
-    companion object {
-        const val TAG = "WebRTCClient"
     }
 
 }

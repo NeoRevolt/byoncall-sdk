@@ -7,13 +7,12 @@ import com.dartmedia.brandedsdk.model.SocketDataModel
 import com.google.gson.Gson
 import io.socket.client.IO
 import io.socket.client.Socket
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class SocketClientSdk @Inject constructor(
-    private val gson: Gson
-) {
+
+object SocketClientSdk {
+
+    private val TAG = SocketClientSdk::class.java.simpleName.toString()
+    private var gson = Gson()
 
     private var socket: Socket? = null
     private var myPhone: String? = null
@@ -35,7 +34,14 @@ class SocketClientSdk @Inject constructor(
     }
 
     private fun observeChatFromSocket() {
-        if (myPhone != null) {
+        if (myPhone == null) {
+            Log.e(
+                TAG,
+                "observeChatFromSocket : Error myPhone is null. Ensure connectSocket() is called before this."
+            )
+            return
+        }
+        try {
             socket?.on(myPhone) { args ->
                 args?.let { d ->
                     if (d.isNotEmpty()) {
@@ -48,38 +54,41 @@ class SocketClientSdk @Inject constructor(
                     }
                 }
             }
-        } else {
-            Log.d(TAG, "observeChatFromSocket : Error myUserId is Null")
+        } catch (e: Exception) {
+            Log.e(TAG, "observeChatFromChat Exception : $e")
         }
     }
 
     fun observeSocketEvent(socketListener: SocketListener) {
-        if (myPhone != null) {
-            try {
-                socket?.on(myPhone) { args ->
-                    args?.let { d ->
-                        if (d.isNotEmpty()) {
-                            val data = d[0]
-                            if (data.toString().isNotEmpty()) {
-                                val dataFromSocket =
-                                    Gson().fromJson(
-                                        data.toString(),
-                                        SocketDataModel::class.java
-                                    )
-                                socketListener.onLatestSocketEvent(dataFromSocket)
-                                Log.d(TAG, "observeSocketEvent: $data")
-                            }
+        if (myPhone == null) {
+            Log.e(
+                TAG,
+                "observeSocketEvent : Error myPhone is null. Ensure connectSocket() is called before this."
+            )
+            return
+        }
+
+        try {
+            socket?.on(myPhone) { args ->
+                args?.let { d ->
+                    if (d.isNotEmpty()) {
+                        val data = d[0]
+                        if (data.toString().isNotEmpty()) {
+                            val dataFromSocket =
+                                Gson().fromJson(
+                                    data.toString(),
+                                    SocketDataModel::class.java
+                                )
+                            socketListener.onLatestSocketEvent(dataFromSocket)
+                            Log.d(TAG, "observeSocketEvent: $data")
                         }
                     }
                 }
-
-            } catch (e: Exception) {
-                Log.e(TAG, "observeSocketEvent Exception : $e")
-                e.printStackTrace()
             }
 
-        } else {
-            Log.e(TAG, "observeSocketEvent : Error myPhone is null")
+        } catch (e: Exception) {
+            Log.e(TAG, "observeSocketEvent Exception : $e")
+            e.printStackTrace()
         }
     }
 
@@ -112,9 +121,5 @@ class SocketClientSdk @Inject constructor(
         fun onLatestSocketEvent(event: SocketDataModel)
     }
 
-
-    companion object {
-        private val TAG = SocketClientSdk::class.java.toString()
-    }
 
 }

@@ -11,11 +11,9 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class MediaRecorderWrapper @Inject constructor(
+
+class MediaRecorderWrapper(
     private val context: Context
 ) {
 
@@ -24,6 +22,11 @@ class MediaRecorderWrapper @Inject constructor(
 
 
     companion object {
+        fun instance(context: Context): MediaRecorderWrapper {
+            return MediaRecorderWrapper(context)
+        }
+
+
         // TODO : For Testing Only Config
         const val IS_SAVE_TO_CACHE = false
         const val IS_DELETE_FILE = false

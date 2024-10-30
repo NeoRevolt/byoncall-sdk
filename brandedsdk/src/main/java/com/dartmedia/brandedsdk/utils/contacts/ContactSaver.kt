@@ -5,17 +5,23 @@ import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.provider.ContactsContract
+import android.util.Log
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class ContactSaver @Inject constructor(
+
+class ContactSaver(
     private val context: Context
 ) {
+
+    companion object {
+        val TAG = ContactSaver::class.java.simpleName.toString()
+        fun instance(context: Context): ContactSaver {
+            return ContactSaver(context)
+        }
+    }
 
     /**
      * Public function to save contact info.
@@ -36,10 +42,12 @@ class ContactSaver @Inject constructor(
 
             // Contact saving success
             Result.success("Contact Saved Successfully")
+            Log.d(TAG, "Contact Saved Successfully")
 
         } catch (e: Exception) {
             // Handle exceptions and return error
             Result.failure<String>(e)
+            Log.e(TAG, "Failed to save contact : $e")
         }
     }
 

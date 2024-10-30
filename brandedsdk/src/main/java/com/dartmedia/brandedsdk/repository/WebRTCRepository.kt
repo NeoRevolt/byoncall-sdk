@@ -1,5 +1,6 @@
 package com.dartmedia.brandedsdk.repository
 
+import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.dartmedia.brandedsdk.model.MyNewCandidateModel
@@ -18,15 +19,22 @@ import org.webrtc.MediaStream
 import org.webrtc.PeerConnection
 import org.webrtc.SessionDescription
 import org.webrtc.SurfaceViewRenderer
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class WebRTCRepository @Inject constructor(
-    private val socketClientSdk: SocketClientSdk,
-    private val webRTCClientSdk: WebRTCClientSdk,
-    private val gson: Gson
+class WebRTCRepository(
+    private val context: Context
 ) : WebRTCClientSdk.Listener {
+
+    companion object {
+        val TAG = WebRTCRepository::class.java.simpleName.toString()
+        fun instance(context: Context): WebRTCRepository {
+            return WebRTCRepository(context)
+        }
+    }
+
+    private val webRTCClientSdk by lazy { WebRTCClientSdk.instance(context) }
+    private val socketClientSdk by lazy { SocketClientSdk }
+
+    private val gson = Gson()
 
     private var targetPhone: String? = null
     var listener: Listener? = null
@@ -292,8 +300,5 @@ class WebRTCRepository @Inject constructor(
         socketClientSdk.sendEventToSocket(data)
     }
 
-    companion object {
-        const val TAG = "WebRTCRepository"
-    }
 
 }

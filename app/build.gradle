@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
-    id 'com.google.dagger.hilt.android'
+//    id 'com.google.dagger.hilt.android'
     id 'kotlin-parcelize'
 }
 
@@ -53,8 +53,8 @@ dependencies {
     // Library
     implementation project(':brandedsdk')
     implementation 'org.webrtc:google-webrtc:1.0.32006' // WebRTC
-    implementation "com.google.dagger:hilt-android:2.44" // Hilt Dagger
-    kapt "com.google.dagger:hilt-compiler:2.44" // Hilt Compiler
+//    implementation "com.google.dagger:hilt-android:2.44" // Hilt Dagger
+//    kapt "com.google.dagger:hilt-compiler:2.44" // Hilt Compiler
 
 //    implementation('io.socket:socket.io-client:2.0.0') {
 //        exclude group: 'org.json', module: 'json'

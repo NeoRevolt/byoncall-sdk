@@ -20,18 +20,17 @@ import com.dartmedia.brandedlibraryclient.adapter.CallLogAdapter
 import com.dartmedia.brandedlibraryclient.databinding.ActivityHistoryCallBinding
 import com.dartmedia.brandedlibraryclient.ui.viewmodel.HistoryCallViewModel
 import com.dartmedia.brandedlibraryclient.ui.viewmodel.ViewModelFactory
-import com.dartmedia.brandedsdk.utils.image.WhiteBackgroundTransformation
 import com.dartmedia.brandedsdk.model.SocketDataModel
 import com.dartmedia.brandedsdk.model.SocketDataTypeEnum
 import com.dartmedia.brandedsdk.repository.WebRTCRepository
 import com.dartmedia.brandedsdk.service.MainService
 import com.dartmedia.brandedsdk.service.MainServiceRepository
 import com.dartmedia.brandedsdk.socket.SocketClientSdk
+import com.dartmedia.brandedsdk.utils.image.WhiteBackgroundTransformation
 import com.dartmedia.network.CallHistoryData
 import com.dartmedia.network.CallHistoryResponse
 import com.dartmedia.network.RetrofitClient
 import com.dartmedia.network.TokenUtils
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -41,20 +40,15 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.Locale
-import javax.inject.Inject
 
 
-@AndroidEntryPoint
 class HistoryCallActivity : AppCompatActivity(), MainService.Listener {
 
-    @Inject
-    lateinit var socketClient: SocketClientSdk
+    private val socketClient by lazy { SocketClientSdk }
 
-    @Inject
-    lateinit var mainRepository: WebRTCRepository
+    private val mainRepository by lazy { WebRTCRepository.instance(this) }
 
-    @Inject
-    lateinit var mainServiceRepository: MainServiceRepository
+    private val mainServiceRepository by lazy { MainServiceRepository.instance(this) }
 
     private lateinit var binding: ActivityHistoryCallBinding
     private lateinit var callLogAdapter: CallLogAdapter
@@ -230,7 +224,7 @@ class HistoryCallActivity : AppCompatActivity(), MainService.Listener {
                         mainRepository.recordCallLog()//TODO (Zal): Record call log to DB
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        Log.d(ChatActivity.TAG, "${ChatActivity.TAG} Exception : ${e.message}")
+                        Log.d(TAG, "$TAG Exception : ${e.message}")
                     }
                 }
                 callMeLaterButton.setOnClickListener {
@@ -288,7 +282,7 @@ class HistoryCallActivity : AppCompatActivity(), MainService.Listener {
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    Log.d(ChatActivity.TAG, "${ChatActivity.TAG} Exception : ${e.message}")
+                    Log.d(TAG, "$TAG Exception : ${e.message}")
                 }
                 binding.incomingCallLayout.isVisible = false
             }
@@ -326,7 +320,7 @@ class HistoryCallActivity : AppCompatActivity(), MainService.Listener {
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    Log.d(ChatActivity.TAG, "${ChatActivity.TAG} Exception : ${e.message}")
+                    Log.d(TAG, "$TAG Exception : ${e.message}")
                 }
                 binding.incomingCallLayout.isVisible = false
             }

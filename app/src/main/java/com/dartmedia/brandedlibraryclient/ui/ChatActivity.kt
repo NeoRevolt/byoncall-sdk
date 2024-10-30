@@ -18,15 +18,14 @@ import com.dartmedia.brandedlibraryclient.R
 import com.dartmedia.brandedlibraryclient.adapter.ChatAdapter
 import com.dartmedia.brandedlibraryclient.databinding.ActivityMainBinding
 import com.dartmedia.brandedlibraryclient.model.ChatModel
-import com.dartmedia.brandedsdk.utils.image.WhiteBackgroundTransformation
 import com.dartmedia.brandedsdk.model.SocketDataModel
 import com.dartmedia.brandedsdk.model.SocketDataTypeEnum
 import com.dartmedia.brandedsdk.repository.WebRTCRepository
 import com.dartmedia.brandedsdk.service.MainService
 import com.dartmedia.brandedsdk.service.MainServiceRepository
 import com.dartmedia.brandedsdk.socket.SocketClientSdk
+import com.dartmedia.brandedsdk.utils.image.WhiteBackgroundTransformation
 import com.google.gson.Gson
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -37,19 +36,15 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.UUID
-import javax.inject.Inject
 
-@AndroidEntryPoint
+
 class ChatActivity : AppCompatActivity(), MainService.Listener {
 
-    @Inject
-    lateinit var socketClient: SocketClientSdk
+    private val socketClient by lazy { SocketClientSdk }
 
-    @Inject
-    lateinit var mainRepository: WebRTCRepository
+    private val mainRepository by lazy { WebRTCRepository.instance(this) }
 
-    @Inject
-    lateinit var mainServiceRepository: MainServiceRepository
+    private val mainServiceRepository by lazy { MainServiceRepository.instance(this) }
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var chatAdapter: ChatAdapter

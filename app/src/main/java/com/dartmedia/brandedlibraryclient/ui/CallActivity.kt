@@ -22,21 +22,24 @@ import com.dartmedia.brandedsdk.repository.WebRTCRepository
 import com.dartmedia.brandedsdk.service.MainService
 import com.dartmedia.brandedsdk.service.MainServiceRepository
 import com.dartmedia.brandedsdk.utils.audio.manager.RTCAudioManager
-import com.dartmedia.brandedsdk.utils.contacts.ContactSaver
 import com.dartmedia.brandedsdk.utils.date.DateUtils.getCurrentDateDetailed
 import com.dartmedia.brandedsdk.utils.extension.convertToHumanTime
 import com.dartmedia.brandedsdk.utils.image.WhiteBackgroundTransformation
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
-@AndroidEntryPoint
 class CallActivity : AppCompatActivity(), MainService.EndCallListener {
+
+    private val serviceRepository by lazy { MainServiceRepository.instance(this) }
+    private val webRTCRepository by lazy { WebRTCRepository.instance(this) }
+
+    private lateinit var requestScreenCaptureLauncher: ActivityResultLauncher<Intent>
+    private lateinit var callLogViewModel: CallLogViewModel
+    private lateinit var binding: ActivityCallBinding
 
     private var sender: String? = null
     private var target: String? = null
@@ -53,28 +56,6 @@ class CallActivity : AppCompatActivity(), MainService.EndCallListener {
 
     private var callDuration: Int = 0
     private var callStartTime: String = ""
-
-    private lateinit var callLogViewModel: CallLogViewModel
-
-    @Inject
-    lateinit var serviceRepository: MainServiceRepository
-
-    @Inject
-    lateinit var webRTCRepository: WebRTCRepository
-
-    @Inject
-    lateinit var contactSaver: ContactSaver
-
-//    @Inject
-//    lateinit var mediaRecorderWrapper: MediaRecorderWrapper
-
-    private lateinit var requestScreenCaptureLauncher: ActivityResultLauncher<Intent>
-
-    private lateinit var binding: ActivityCallBinding
-
-    private val job = Job()
-    private val scope = CoroutineScope(Dispatchers.Main + job)
-
 
     override fun onStart() {
         super.onStart()

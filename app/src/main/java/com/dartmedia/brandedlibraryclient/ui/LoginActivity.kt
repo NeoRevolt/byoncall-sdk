@@ -9,21 +9,20 @@ import com.dartmedia.brandedlibraryclient.databinding.ActivityLoginBinding
 import com.dartmedia.brandedsdk.utils.contacts.ContactSaver
 import com.dartmedia.brandedsdk.utils.extension.getCameraAndMicPermission
 import com.dartmedia.brandedsdk.utils.phone.PhoneNumberUtils
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@AndroidEntryPoint
+
 class LoginActivity : AppCompatActivity() {
 
+    companion object {
+        private val TAG = LoginActivity::class.java.simpleName.toString()
+    }
+
     private lateinit var binding: ActivityLoginBinding
-
-    @Inject
-    lateinit var contactSaver: ContactSaver
-
+    private val contactSaver by lazy { ContactSaver.instance(this) }
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Main + job)
 
@@ -41,7 +40,7 @@ class LoginActivity : AppCompatActivity() {
                 val phoneNumber = PhoneNumberUtils.removeLeadingZero(etMyPhone.text.toString())
                 val phoneNumberFull = "${countryCode}${phoneNumber}"
 
-                Log.d("LoginActivity", "phoneNumberFull : ${phoneNumberFull}")
+                Log.d(TAG, "phoneNumberFull : $phoneNumberFull")
 
                 if (phoneNumberFull.isNotEmpty() && PhoneNumberUtils.isValidPhoneNumber(
                         phoneNumberFull,
@@ -63,6 +62,16 @@ class LoginActivity : AppCompatActivity() {
                                     putExtra(HistoryCallActivity.MY_PHONE, phoneNumberFull)
                                 }
                             startActivity(intent)
+
+//                            val intent =
+//                                Intent(this@LoginActivity, ChatActivity::class.java).apply {
+//                                    putExtra(ChatActivity.MY_PHONE, phoneNumberFull)
+//                                    putExtra(ChatActivity.TARGET_PHONE, "911")
+//                                    putExtra(ChatActivity.MY_BRAND_NAME, "Client")
+//                                    putExtra(ChatActivity.MY_IMAGE_URL, "https://dartmedia.co.id/images/logo_dartmedia.png")
+//                                    putExtra(ChatActivity.CALL_MESSAGE, "Client Test")
+//                                }
+//                            startActivity(intent)
                         }
                     }
                 } else {

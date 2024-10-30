@@ -24,18 +24,15 @@ import com.dartmedia.brandedsdk.service.MainServiceActionsEnum.TOGGLE_AUDIO_DEVI
 import com.dartmedia.brandedsdk.service.MainServiceActionsEnum.TOGGLE_SCREEN_SHARE
 import com.dartmedia.brandedsdk.service.MainServiceActionsEnum.TOGGLE_VIDEO
 import com.dartmedia.brandedsdk.utils.audio.manager.RTCAudioManager
-import dagger.hilt.android.AndroidEntryPoint
 import org.webrtc.SurfaceViewRenderer
-import javax.inject.Inject
 
-@AndroidEntryPoint
+
 class MainService : Service(), WebRTCRepository.Listener {
 
     private var isServiceRunning = false
     private var username: String? = null
 
-    @Inject
-    lateinit var webRTCRepository: WebRTCRepository
+    private val webRTCRepository by lazy { WebRTCRepository.instance(this) }
 
     private lateinit var notificationManager: NotificationManager
     private lateinit var rtcAudioManager: RTCAudioManager
@@ -177,11 +174,18 @@ class MainService : Service(), WebRTCRepository.Listener {
             isServiceRunning = true
             username = incomingIntent.getStringExtra("username")
 
+            if (username == null){
+                Log.e(TAG, "handleStartService: username is null")
+                return
+            }
+
             // setup local client
             webRTCRepository.listener = this
             webRTCRepository.observeSocket()
             webRTCRepository.initWebrtcClient(username!!)
 
+        } else{
+            Log.d(TAG, "handleStartService : Service is already running")
         }
     }
 
