@@ -10,9 +10,9 @@ import com.dartmedia.brandedsdk.model.SocketDataTypeEnum.EndCall
 import com.dartmedia.brandedsdk.model.SocketDataTypeEnum.IceCandidates
 import com.dartmedia.brandedsdk.model.SocketDataTypeEnum.Offer
 import com.dartmedia.brandedsdk.model.UserStatusEnum
-import com.dartmedia.brandedsdk.socket.SocketClientSdk
+import com.dartmedia.brandedsdk.socket.BrandedSocketClient
 import com.dartmedia.brandedsdk.webrtc.MyPeerObserver
-import com.dartmedia.brandedsdk.webrtc.WebRTCClientSdk
+import com.dartmedia.brandedsdk.webrtc.WebRTCClient
 import com.google.gson.Gson
 import org.webrtc.IceCandidate
 import org.webrtc.MediaStream
@@ -20,19 +20,20 @@ import org.webrtc.PeerConnection
 import org.webrtc.SessionDescription
 import org.webrtc.SurfaceViewRenderer
 
-class WebRTCRepository(
+class BrandedWebRTCClient(
     private val context: Context
-) : WebRTCClientSdk.Listener {
+) : WebRTCClient.Listener {
 
     companion object {
-        val TAG = WebRTCRepository::class.java.simpleName.toString()
-        fun instance(context: Context): WebRTCRepository {
-            return WebRTCRepository(context)
+        fun instance(context: Context): BrandedWebRTCClient {
+            return BrandedWebRTCClient(context)
         }
+
+        val TAG = BrandedWebRTCClient::class.java.simpleName.toString()
     }
 
-    private val webRTCClientSdk by lazy { WebRTCClientSdk.instance(context) }
-    private val socketClientSdk by lazy { SocketClientSdk }
+    private val webRTCClient by lazy { WebRTCClient.instance(context) }
+    private val socketClientSdk by lazy { BrandedSocketClient }
 
     private val gson = Gson()
 
@@ -55,18 +56,18 @@ class WebRTCRepository(
     }
 
     fun observeSocket() {
-        socketClientSdk.observeSocketEvent(object : SocketClientSdk.SocketListener {
+        socketClientSdk.observeSocketEvent(object : BrandedSocketClient.SocketListener {
             override fun onLatestSocketEvent(event: SocketDataModel) {
                 listener?.onLatestEventReceived(event)
                 when (event.type) {
                     Offer -> {
-                        webRTCClientSdk.onRemoteSessionReceived(
+                        webRTCClient.onRemoteSessionReceived(
                             SessionDescription(
                                 SessionDescription.Type.OFFER,
                                 event.data.toString()
                             )
                         )
-                        webRTCClientSdk.answer(targetPhone!!)
+                        webRTCClient.answer(targetPhone!!)
                         Log.d(
                             TAG,
                             "observeSocket: Offer from $targetPhone received, and sent Answer"
@@ -74,7 +75,7 @@ class WebRTCRepository(
                     }
 
                     Answer -> {
-                        webRTCClientSdk.onRemoteSessionReceived(
+                        webRTCClient.onRemoteSessionReceived(
                             SessionDescription(
                                 SessionDescription.Type.ANSWER,
                                 event.data.toString()
@@ -100,7 +101,7 @@ class WebRTCRepository(
                                 candidate.sdpMLineIndex!!,
                                 candidate.candidate
                             )
-                            webRTCClientSdk.addIceCandidateToPeer(iceCandidateModel)
+                            webRTCClient.addIceCandidateToPeer(iceCandidateModel)
                             Log.d(TAG, "observeSocket: ICE from $targetPhone received")
                         }
                     }
@@ -136,8 +137,8 @@ class WebRTCRepository(
     }
 
     fun initWebrtcClient(username: String) {
-        webRTCClientSdk.listener = this
-        webRTCClientSdk.initializeWebrtcClient(username, object : MyPeerObserver() {
+        webRTCClient.listener = this
+        webRTCClient.initializeWebrtcClient(username, object : MyPeerObserver() {
 
             override fun onAddStream(p0: MediaStream?) {
                 super.onAddStream(p0)
@@ -159,7 +160,7 @@ class WebRTCRepository(
                         sdpMid = p0?.sdpMid
                     )
 
-                    webRTCClientSdk.sendIceCandidate(targetPhone!!, mIceCandidate)
+                    webRTCClient.sendIceCandidate(targetPhone!!, mIceCandidate)
                 } catch (e: Exception) {
                     Log.e(TAG, "createPeerConnection Exception : $e")
                 }
@@ -220,18 +221,18 @@ class WebRTCRepository(
     }
 
     fun initLocalSurfaceView(view: SurfaceViewRenderer, isVideoCall: Boolean) {
-        webRTCClientSdk.initLocalSurfaceView(view, isVideoCall)
+        webRTCClient.initLocalSurfaceView(view, isVideoCall)
     }
 
     fun initRemoteSurfaceView(view: SurfaceViewRenderer) {
-        webRTCClientSdk.initRemoteSurfaceView(view)
+        webRTCClient.initRemoteSurfaceView(view)
         this.remoteView = view
     }
 
 
     fun startCall() {
         try {
-            webRTCClientSdk.call(targetPhone!!)
+            webRTCClient.call(targetPhone!!)
         } catch (e: Exception) {
             e.printStackTrace()
             Log.d(TAG, "StartCall() Exception: ${e.cause}")
@@ -239,7 +240,7 @@ class WebRTCRepository(
     }
 
     fun endCall() {
-        webRTCClientSdk.closeConnection()
+        webRTCClient.closeConnection()
         changeMyStatus(UserStatusEnum.ONLINE)
     }
 
@@ -273,26 +274,26 @@ class WebRTCRepository(
     }
 
     fun toggleAudio(shouldBeMuted: Boolean) {
-        webRTCClientSdk.toggleAudio(shouldBeMuted)
+        webRTCClient.toggleAudio(shouldBeMuted)
     }
 
     fun toggleVideo(shouldBeMuted: Boolean) {
-        webRTCClientSdk.toggleVideo(shouldBeMuted)
+        webRTCClient.toggleVideo(shouldBeMuted)
     }
 
     fun switchCamera() {
-        webRTCClientSdk.switchCamera()
+        webRTCClient.switchCamera()
     }
 
     fun setScreenCaptureIntent(screenPermissionIntent: Intent) {
-        webRTCClientSdk.setPermissionIntent(screenPermissionIntent)
+        webRTCClient.setPermissionIntent(screenPermissionIntent)
     }
 
     fun toggleScreenShare(isStarting: Boolean) {
         if (isStarting) {
-            webRTCClientSdk.startScreenCapturing()
+            webRTCClient.startScreenCapturing()
         } else {
-            webRTCClientSdk.stopScreenCapturing()
+            webRTCClient.stopScreenCapturing()
         }
     }
 

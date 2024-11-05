@@ -22,10 +22,10 @@ import com.dartmedia.brandedlibraryclient.ui.viewmodel.HistoryCallViewModel
 import com.dartmedia.brandedlibraryclient.ui.viewmodel.ViewModelFactory
 import com.dartmedia.brandedsdk.model.SocketDataModel
 import com.dartmedia.brandedsdk.model.SocketDataTypeEnum
-import com.dartmedia.brandedsdk.repository.WebRTCRepository
-import com.dartmedia.brandedsdk.service.MainService
-import com.dartmedia.brandedsdk.service.MainServiceRepository
-import com.dartmedia.brandedsdk.socket.SocketClientSdk
+import com.dartmedia.brandedsdk.repository.BrandedWebRTCClient
+import com.dartmedia.brandedsdk.service.BrandedService
+import com.dartmedia.brandedsdk.service.BrandedServiceClient
+import com.dartmedia.brandedsdk.socket.BrandedSocketClient
 import com.dartmedia.brandedsdk.utils.image.WhiteBackgroundTransformation
 import com.dartmedia.network.CallHistoryData
 import com.dartmedia.network.CallHistoryResponse
@@ -42,13 +42,13 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 
-class HistoryCallActivity : AppCompatActivity(), MainService.Listener {
+class HistoryCallActivity : AppCompatActivity(), BrandedService.Listener {
 
-    private val socketClient by lazy { SocketClientSdk }
+    private val socketClient by lazy { BrandedSocketClient }
 
-    private val mainRepository by lazy { WebRTCRepository.instance(this) }
+    private val webRTCClient by lazy { BrandedWebRTCClient.instance(this) }
 
-    private val mainServiceRepository by lazy { MainServiceRepository.instance(this) }
+    private val serviceClient by lazy { BrandedServiceClient.instance(this) }
 
     private lateinit var binding: ActivityHistoryCallBinding
     private lateinit var callLogAdapter: CallLogAdapter
@@ -79,9 +79,9 @@ class HistoryCallActivity : AppCompatActivity(), MainService.Listener {
         if (myPhone.isEmpty() || myPhone == "") {
             finish()
         } else {
-            mainRepository.connectSocket(socketUrl = SOCKET_URL, myPhone)
-            MainService.listener = this
-            mainServiceRepository.startService(myPhone)
+            webRTCClient.connectSocket(socketUrl = SOCKET_URL, myPhone)
+            BrandedService.listener = this
+            serviceClient.startService(myPhone)
         }
     }
 
@@ -220,8 +220,8 @@ class HistoryCallActivity : AppCompatActivity(), MainService.Listener {
                 declineButton.setOnClickListener {
                     incomingCallLayout.isVisible = false
                     try {
-                        mainRepository.sendRejectCall(data)
-                        mainRepository.recordCallLog()//TODO (Zal): Record call log to DB
+                        webRTCClient.sendRejectCall(data)
+                        webRTCClient.recordCallLog()//TODO (Zal): Record call log to DB
                     } catch (e: Exception) {
                         e.printStackTrace()
                         Log.d(TAG, "$TAG Exception : ${e.message}")
@@ -274,8 +274,8 @@ class HistoryCallActivity : AppCompatActivity(), MainService.Listener {
 
             if (formattedDateTime.isNotEmpty()) {
                 try {
-                    mainRepository.sendRejectCall(data)
-                    mainRepository.recordCallLog()
+                    webRTCClient.sendRejectCall(data)
+                    webRTCClient.recordCallLog()
                     GlobalScope.launch(Dispatchers.Main) {
                         delay(1000)
                         // TODO send chat or make alarm
@@ -312,8 +312,8 @@ class HistoryCallActivity : AppCompatActivity(), MainService.Listener {
             val selectedItem = items[which]
             if (selectedItem.isNotEmpty()) {
                 try {
-                    mainRepository.sendRejectCall(data)
-                    mainRepository.recordCallLog()
+                    webRTCClient.sendRejectCall(data)
+                    webRTCClient.recordCallLog()
                     GlobalScope.launch(Dispatchers.Main) {
                         delay(1000)
                         // TODO send chat or make alarm
@@ -356,5 +356,6 @@ class HistoryCallActivity : AppCompatActivity(), MainService.Listener {
         var TAG = HistoryCallActivity::class.java.simpleName
         const val MY_PHONE = "myPhoneNumber"
         const val SOCKET_URL = "http://103.39.68.184:8901/socket/private"
+//        const val SOCKET_URL = "http://10.0.2.2:8005/socket/private" // Locals
     }
 }

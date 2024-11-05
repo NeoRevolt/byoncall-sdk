@@ -13,26 +13,26 @@ import com.dartmedia.brandedsdk.R
 import com.dartmedia.brandedsdk.model.SocketDataModel
 import com.dartmedia.brandedsdk.model.SocketDataTypeEnum
 import com.dartmedia.brandedsdk.model.isValid
-import com.dartmedia.brandedsdk.repository.WebRTCRepository
-import com.dartmedia.brandedsdk.service.MainServiceActionsEnum.END_CALL
-import com.dartmedia.brandedsdk.service.MainServiceActionsEnum.SETUP_VIEWS
-import com.dartmedia.brandedsdk.service.MainServiceActionsEnum.START_SERVICE
-import com.dartmedia.brandedsdk.service.MainServiceActionsEnum.STOP_SERVICE
-import com.dartmedia.brandedsdk.service.MainServiceActionsEnum.SWITCH_CAMERA
-import com.dartmedia.brandedsdk.service.MainServiceActionsEnum.TOGGLE_AUDIO
-import com.dartmedia.brandedsdk.service.MainServiceActionsEnum.TOGGLE_AUDIO_DEVICE
-import com.dartmedia.brandedsdk.service.MainServiceActionsEnum.TOGGLE_SCREEN_SHARE
-import com.dartmedia.brandedsdk.service.MainServiceActionsEnum.TOGGLE_VIDEO
+import com.dartmedia.brandedsdk.repository.BrandedWebRTCClient
+import com.dartmedia.brandedsdk.service.BrandedServiceActionsEnum.END_CALL
+import com.dartmedia.brandedsdk.service.BrandedServiceActionsEnum.SETUP_VIEWS
+import com.dartmedia.brandedsdk.service.BrandedServiceActionsEnum.START_SERVICE
+import com.dartmedia.brandedsdk.service.BrandedServiceActionsEnum.STOP_SERVICE
+import com.dartmedia.brandedsdk.service.BrandedServiceActionsEnum.SWITCH_CAMERA
+import com.dartmedia.brandedsdk.service.BrandedServiceActionsEnum.TOGGLE_AUDIO
+import com.dartmedia.brandedsdk.service.BrandedServiceActionsEnum.TOGGLE_AUDIO_DEVICE
+import com.dartmedia.brandedsdk.service.BrandedServiceActionsEnum.TOGGLE_SCREEN_SHARE
+import com.dartmedia.brandedsdk.service.BrandedServiceActionsEnum.TOGGLE_VIDEO
 import com.dartmedia.brandedsdk.utils.audio.manager.RTCAudioManager
 import org.webrtc.SurfaceViewRenderer
 
 
-class MainService : Service(), WebRTCRepository.Listener {
+class BrandedService : Service(), BrandedWebRTCClient.Listener {
 
     private var isServiceRunning = false
     private var username: String? = null
 
-    private val webRTCRepository by lazy { WebRTCRepository.instance(this) }
+    private val brandedWebRTCClient by lazy { BrandedWebRTCClient.instance(this) }
 
     private lateinit var notificationManager: NotificationManager
     private lateinit var rtcAudioManager: RTCAudioManager
@@ -40,7 +40,7 @@ class MainService : Service(), WebRTCRepository.Listener {
 
 
     companion object {
-        const val TAG = "MainService"
+        const val TAG = "BrandedService"
         var listener: Listener? = null
         var endCallListener: EndCallListener? = null
         var localSurfaceView: SurfaceViewRenderer? = null
@@ -78,8 +78,8 @@ class MainService : Service(), WebRTCRepository.Listener {
 
     private fun handleStopService() {
         stopForeground(STOP_FOREGROUND_REMOVE)
-        webRTCRepository.endCall()
-        webRTCRepository.disconnectSocket {
+        brandedWebRTCClient.endCall()
+        brandedWebRTCClient.disconnectSocket {
             isServiceRunning = false
             stopSelf()
         }
@@ -91,16 +91,16 @@ class MainService : Service(), WebRTCRepository.Listener {
         if (isStarting) {
             // Start Screen Share but first remove the camera streaming firs and mute the audio
             if (isPreviousCallStateVideo) {
-                webRTCRepository.toggleVideo(true)
+                brandedWebRTCClient.toggleVideo(true)
             }
-            webRTCRepository.setScreenCaptureIntent(screenPermissionIntent!!)
-            webRTCRepository.toggleScreenShare(true)
+            brandedWebRTCClient.setScreenCaptureIntent(screenPermissionIntent!!)
+            brandedWebRTCClient.toggleScreenShare(true)
 
         } else {
             // Stop Share Screen and check if camera streaming was on so make it on back again
-            webRTCRepository.toggleScreenShare(false)
+            brandedWebRTCClient.toggleScreenShare(false)
             if (isPreviousCallStateVideo) {
-                webRTCRepository.toggleVideo(false)
+                brandedWebRTCClient.toggleVideo(false)
             }
         }
     }
@@ -122,31 +122,31 @@ class MainService : Service(), WebRTCRepository.Listener {
     private fun handleToggleVideo(incomingIntent: Intent) {
         val shouldBeMuted = incomingIntent.getBooleanExtra("shouldBeMuted", true)
         this.isPreviousCallStateVideo = !shouldBeMuted
-        webRTCRepository.toggleVideo(shouldBeMuted)
+        brandedWebRTCClient.toggleVideo(shouldBeMuted)
     }
 
     private fun handleToggleAudio(incomingIntent: Intent) {
         val shouldBeMuted = incomingIntent.getBooleanExtra("shouldBeMuted", true)
-        webRTCRepository.toggleAudio(shouldBeMuted)
+        brandedWebRTCClient.toggleAudio(shouldBeMuted)
     }
 
     private fun handleSwitchCamera() {
-        webRTCRepository.switchCamera()
+        brandedWebRTCClient.switchCamera()
     }
 
     private fun handleEndCall() {
         stopForeground(STOP_FOREGROUND_REMOVE)
         //1. we have to send a signal to other peer that call is ended
-        webRTCRepository.sendEndCall()
+        brandedWebRTCClient.sendEndCall()
         //2.end out call process and restart our webrtc client
         endCallAndRestartRepository()
     }
 
     private fun endCallAndRestartRepository() {
-        webRTCRepository.endCall()
+        brandedWebRTCClient.endCall()
         endCallListener?.onCallEnded()
         username?.let { username ->
-            webRTCRepository.initWebrtcClient(username)
+            brandedWebRTCClient.initWebrtcClient(username)
         }
         stopForeground(STOP_FOREGROUND_REMOVE)
     }
@@ -157,13 +157,13 @@ class MainService : Service(), WebRTCRepository.Listener {
         val isVideoCall = incomingIntent.getBooleanExtra("isVideoCall", true)
         val target = incomingIntent.getStringExtra("target")
         this.isPreviousCallStateVideo = isVideoCall
-        webRTCRepository.setTarget(target!!)
-        webRTCRepository.initLocalSurfaceView(localSurfaceView!!, isVideoCall)
-        webRTCRepository.initRemoteSurfaceView(remoteSurfaceView!!)
+        brandedWebRTCClient.setTarget(target!!)
+        brandedWebRTCClient.initLocalSurfaceView(localSurfaceView!!, isVideoCall)
+        brandedWebRTCClient.initRemoteSurfaceView(remoteSurfaceView!!)
 
         if (!isCaller) {
             // start the video call
-            webRTCRepository.startCall()
+            brandedWebRTCClient.startCall()
         }
 
     }
@@ -180,9 +180,9 @@ class MainService : Service(), WebRTCRepository.Listener {
             }
 
             // setup local client
-            webRTCRepository.listener = this
-            webRTCRepository.observeSocket()
-            webRTCRepository.initWebrtcClient(username!!)
+            brandedWebRTCClient.listener = this
+            brandedWebRTCClient.observeSocket()
+            brandedWebRTCClient.initWebrtcClient(username!!)
 
         } else{
             Log.d(TAG, "handleStartService : Service is already running")
@@ -195,7 +195,7 @@ class MainService : Service(), WebRTCRepository.Listener {
                 "channel1", "foreground", NotificationManager.IMPORTANCE_DEFAULT
             )
 
-            val intent = Intent(this, MainServiceReceiver::class.java).apply {
+            val intent = Intent(this, BrandedServiceReceiver::class.java).apply {
                 action = "ACTION_END_CALL"
             }
             val pendingIntent: PendingIntent =

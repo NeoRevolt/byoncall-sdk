@@ -18,24 +18,23 @@ import com.dartmedia.brandedlibraryclient.databinding.ActivityCallBinding
 import com.dartmedia.brandedlibraryclient.ui.viewmodel.CallLogViewModel
 import com.dartmedia.brandedlibraryclient.ui.viewmodel.ViewModelFactory
 import com.dartmedia.brandedsdk.model.UserStatusEnum
-import com.dartmedia.brandedsdk.repository.WebRTCRepository
-import com.dartmedia.brandedsdk.service.MainService
-import com.dartmedia.brandedsdk.service.MainServiceRepository
+import com.dartmedia.brandedsdk.repository.BrandedWebRTCClient
+import com.dartmedia.brandedsdk.service.BrandedService
+import com.dartmedia.brandedsdk.service.BrandedServiceClient
 import com.dartmedia.brandedsdk.utils.audio.manager.RTCAudioManager
 import com.dartmedia.brandedsdk.utils.date.DateUtils.getCurrentDateDetailed
 import com.dartmedia.brandedsdk.utils.extension.convertToHumanTime
 import com.dartmedia.brandedsdk.utils.image.WhiteBackgroundTransformation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class CallActivity : AppCompatActivity(), MainService.EndCallListener {
+class CallActivity : AppCompatActivity(), BrandedService.EndCallListener {
 
-    private val serviceRepository by lazy { MainServiceRepository.instance(this) }
-    private val webRTCRepository by lazy { WebRTCRepository.instance(this) }
+    private val serviceClient by lazy { BrandedServiceClient.instance(this) }
+    private val webRTCClient by lazy { BrandedWebRTCClient.instance(this) }
 
     private lateinit var requestScreenCaptureLauncher: ActivityResultLauncher<Intent>
     private lateinit var callLogViewModel: CallLogViewModel
@@ -66,10 +65,10 @@ class CallActivity : AppCompatActivity(), MainService.EndCallListener {
             if (result.resultCode == Activity.RESULT_OK) {
                 val intent = result.data
                 //its time to give this intent to our service and service passes it to our webrtc client
-                MainService.screenPermissionIntent = intent
+                BrandedService.screenPermissionIntent = intent
                 isScreenCasting = true
                 updateUiToScreenCaptureIsOn()
-                serviceRepository.toggleScreenShare(true)
+                serviceClient.toggleScreenShare(true)
             }
         }
     }
@@ -121,7 +120,7 @@ class CallActivity : AppCompatActivity(), MainService.EndCallListener {
 
         target?.let { target ->
             targetName?.let { targetName ->
-                webRTCRepository.observeTargetContact(target) {
+                webRTCClient.observeTargetContact(target) {
                     when (it) {
 
                         UserStatusEnum.ONLINE -> {
@@ -176,27 +175,27 @@ class CallActivity : AppCompatActivity(), MainService.EndCallListener {
                 switchCameraButton.isVisible = false
                 voiceCallLayouts.isVisible = true
                 voiceCallEndCallButton.setOnClickListener {
-                    serviceRepository.sendEndCall()
+                    serviceClient.sendEndCall()
                 }
             }
 
-            MainService.remoteSurfaceView = remoteView
-            MainService.localSurfaceView = localView
-            serviceRepository.setupViews(isVideoCall, isCaller, target!!)
+            BrandedService.remoteSurfaceView = remoteView
+            BrandedService.localSurfaceView = localView
+            serviceClient.setupViews(isVideoCall, isCaller, target!!)
 
             endCallButton.setOnClickListener {
-                serviceRepository.sendEndCall()
+                serviceClient.sendEndCall()
             }
 
             switchCameraButton.setOnClickListener {
-                serviceRepository.switchCamera()
+                serviceClient.switchCamera()
             }
         }
         setupMicToggleClicked()
         setupCameraToggleClicked()
         setupToggleAudioDevice()
         setupScreenCasting()
-        MainService.endCallListener = this
+        BrandedService.endCallListener = this
 
     }
 
@@ -219,7 +218,7 @@ class CallActivity : AppCompatActivity(), MainService.EndCallListener {
                     //we have to end screen casting
                     isScreenCasting = false
                     updateUiToScreenCaptureIsOff()
-                    serviceRepository.toggleScreenShare(false)
+                    serviceClient.toggleScreenShare(false)
                 }
             }
         }
@@ -260,13 +259,13 @@ class CallActivity : AppCompatActivity(), MainService.EndCallListener {
                 if (!isMicrophoneMuted) {
                     //we should mute our mic
                     //1. send a command to repository
-                    serviceRepository.toggleAudio(true)
+                    serviceClient.toggleAudio(true)
                     //2. update ui to mic is muted
                     toggleMicrophoneButton.setImageResource(R.drawable.ic_mic_on)
                 } else {
                     //we should set it back to normal
                     //1. send a command to repository to make it back to normal status
-                    serviceRepository.toggleAudio(false)
+                    serviceClient.toggleAudio(false)
                     //2. update ui
                     toggleMicrophoneButton.setImageResource(R.drawable.ic_mic_off)
                 }
@@ -276,13 +275,13 @@ class CallActivity : AppCompatActivity(), MainService.EndCallListener {
                 if (!isMicrophoneMuted) {
                     //we should mute our mic
                     //1. send a command to repository
-                    serviceRepository.toggleAudio(true)
+                    serviceClient.toggleAudio(true)
                     //2. update ui to mic is muted
                     voiceCallMuteButton.setImageResource(R.drawable.ic_mic_on)
                 } else {
                     //we should set it back to normal
                     //1. send a command to repository to make it back to normal status
-                    serviceRepository.toggleAudio(false)
+                    serviceClient.toggleAudio(false)
                     //2. update ui
                     voiceCallMuteButton.setImageResource(R.drawable.ic_mic_off)
                 }
@@ -298,12 +297,12 @@ class CallActivity : AppCompatActivity(), MainService.EndCallListener {
                     //we should set it to earpiece mode
                     toggleAudioDevice.setImageResource(R.drawable.ic_speaker)
                     //we should send a command to our service to switch between devices
-                    serviceRepository.toggleAudioDevice(RTCAudioManager.AudioDevice.EARPIECE.name)
+                    serviceClient.toggleAudioDevice(RTCAudioManager.AudioDevice.EARPIECE.name)
 
                 } else {
                     //we should set it to speaker mode
                     toggleAudioDevice.setImageResource(R.drawable.ic_ear)
-                    serviceRepository.toggleAudioDevice(RTCAudioManager.AudioDevice.SPEAKER_PHONE.name)
+                    serviceClient.toggleAudioDevice(RTCAudioManager.AudioDevice.SPEAKER_PHONE.name)
 
                 }
                 isSpeakerMode = !isSpeakerMode
@@ -315,10 +314,10 @@ class CallActivity : AppCompatActivity(), MainService.EndCallListener {
         binding.apply {
             toggleCameraButton.setOnClickListener {
                 if (!isCameraMuted) {
-                    serviceRepository.toggleVideo(true)
+                    serviceClient.toggleVideo(true)
                     toggleCameraButton.setImageResource(R.drawable.ic_camera_on)
                 } else {
-                    serviceRepository.toggleVideo(false)
+                    serviceClient.toggleVideo(false)
                     toggleCameraButton.setImageResource(R.drawable.ic_camera_off)
                 }
 
@@ -333,15 +332,15 @@ class CallActivity : AppCompatActivity(), MainService.EndCallListener {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        serviceRepository.sendEndCall()
+        serviceClient.sendEndCall()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        MainService.remoteSurfaceView?.release()
-        MainService.remoteSurfaceView = null
+        BrandedService.remoteSurfaceView?.release()
+        BrandedService.remoteSurfaceView = null
 
-        MainService.localSurfaceView?.release()
-        MainService.localSurfaceView = null
+        BrandedService.localSurfaceView?.release()
+        BrandedService.localSurfaceView = null
     }
 }

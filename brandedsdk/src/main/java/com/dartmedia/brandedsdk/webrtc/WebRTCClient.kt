@@ -28,14 +28,14 @@ import org.webrtc.VideoCapturer
 import org.webrtc.VideoTrack
 
 
-class WebRTCClientSdk(
+class WebRTCClient(
     private val context: Context
 ) {
 
     companion object {
-        val TAG = WebRTCClientSdk::class.java.simpleName.toString()
-        fun instance(context: Context): WebRTCClientSdk {
-            return WebRTCClientSdk(context)
+        val TAG = WebRTCClient::class.java.simpleName.toString()
+        fun instance(context: Context): WebRTCClient {
+            return WebRTCClient(context)
         }
     }
 

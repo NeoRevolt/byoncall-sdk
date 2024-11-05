@@ -9,9 +9,9 @@ import io.socket.client.IO
 import io.socket.client.Socket
 
 
-object SocketClientSdk {
+object BrandedSocketClient {
 
-    private val TAG = SocketClientSdk::class.java.simpleName.toString()
+    private val TAG = BrandedSocketClient::class.java.simpleName.toString()
     private var gson = Gson()
 
     private var socket: Socket? = null

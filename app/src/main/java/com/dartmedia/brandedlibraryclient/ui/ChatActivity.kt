@@ -20,10 +20,10 @@ import com.dartmedia.brandedlibraryclient.databinding.ActivityMainBinding
 import com.dartmedia.brandedlibraryclient.model.ChatModel
 import com.dartmedia.brandedsdk.model.SocketDataModel
 import com.dartmedia.brandedsdk.model.SocketDataTypeEnum
-import com.dartmedia.brandedsdk.repository.WebRTCRepository
-import com.dartmedia.brandedsdk.service.MainService
-import com.dartmedia.brandedsdk.service.MainServiceRepository
-import com.dartmedia.brandedsdk.socket.SocketClientSdk
+import com.dartmedia.brandedsdk.repository.BrandedWebRTCClient
+import com.dartmedia.brandedsdk.service.BrandedService
+import com.dartmedia.brandedsdk.service.BrandedServiceClient
+import com.dartmedia.brandedsdk.socket.BrandedSocketClient
 import com.dartmedia.brandedsdk.utils.image.WhiteBackgroundTransformation
 import com.google.gson.Gson
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -38,13 +38,13 @@ import java.util.Locale
 import java.util.UUID
 
 
-class ChatActivity : AppCompatActivity(), MainService.Listener {
+class ChatActivity : AppCompatActivity(), BrandedService.Listener {
 
-    private val socketClient by lazy { SocketClientSdk }
+    private val socketClient by lazy { BrandedSocketClient }
 
-    private val mainRepository by lazy { WebRTCRepository.instance(this) }
+    private val webRTCClient by lazy { BrandedWebRTCClient.instance(this) }
 
-    private val mainServiceRepository by lazy { MainServiceRepository.instance(this) }
+    private val brandedServiceClient by lazy { BrandedServiceClient.instance(this) }
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var chatAdapter: ChatAdapter
@@ -80,9 +80,9 @@ class ChatActivity : AppCompatActivity(), MainService.Listener {
         if (myPhone.isEmpty() || myPhone == "") {
             finish()
         } else {
-            mainRepository.connectSocket(socketUrl = SOCKET_URL, myPhone)
-            MainService.listener = this
-            mainServiceRepository.startService(myPhone)
+            webRTCClient.connectSocket(socketUrl = SOCKET_URL, myPhone)
+            BrandedService.listener = this
+            brandedServiceClient.startService(myPhone)
             chatAdapter = ChatAdapter()
             binding.rvChat.apply {
                 layoutManager = LinearLayoutManager(this@ChatActivity)
@@ -97,7 +97,7 @@ class ChatActivity : AppCompatActivity(), MainService.Listener {
 
             backBtn.setOnClickListener {
 //                onBackPressedDispatcher.onBackPressed()
-                mainServiceRepository.stopService()
+                brandedServiceClient.stopService()
                 finish()
             }
 
@@ -121,7 +121,7 @@ class ChatActivity : AppCompatActivity(), MainService.Listener {
 
             audioCallBtn.setOnClickListener {
                 try {
-                    mainRepository.sendConnectionRequest(
+                    webRTCClient.sendConnectionRequest(
                         SocketDataModel(
                             type = SocketDataTypeEnum.StartAudioCall,
                             senderId = myPhone,
@@ -151,7 +151,7 @@ class ChatActivity : AppCompatActivity(), MainService.Listener {
 
             videoCallBtn.setOnClickListener {
                 try {
-                    mainRepository.sendConnectionRequest(
+                    webRTCClient.sendConnectionRequest(
                         SocketDataModel(
                             type = SocketDataTypeEnum.StartVideoCall,
                             senderId = myPhone,
@@ -277,8 +277,8 @@ class ChatActivity : AppCompatActivity(), MainService.Listener {
                 declineButton.setOnClickListener {
                     incomingCallLayout.isVisible = false
                     try {
-                        mainRepository.sendRejectCall(data)
-                        mainRepository.recordCallLog()//TODO (Zal): Record call log to DB
+                        webRTCClient.sendRejectCall(data)
+                        webRTCClient.recordCallLog()//TODO (Zal): Record call log to DB
                     } catch (e: Exception) {
                         e.printStackTrace()
                         Log.d(TAG, "$TAG Exception : ${e.message}")
@@ -342,8 +342,8 @@ class ChatActivity : AppCompatActivity(), MainService.Listener {
                     receiverId = targetPhone,
                 )
                 try {
-                    mainRepository.sendRejectCall(data)
-                    mainRepository.recordCallLog()
+                    webRTCClient.sendRejectCall(data)
+                    webRTCClient.recordCallLog()
                     GlobalScope.launch(Dispatchers.Main) {
                         delay(1000)
                         sendChatMessage(chatModel)
@@ -392,8 +392,8 @@ class ChatActivity : AppCompatActivity(), MainService.Listener {
                     receiverId = targetPhone,
                 )
                 try {
-                    mainRepository.sendRejectCall(data)
-                    mainRepository.recordCallLog()
+                    webRTCClient.sendRejectCall(data)
+                    webRTCClient.recordCallLog()
                     GlobalScope.launch(Dispatchers.Main) {
                         delay(1000)
                         sendChatMessage(chatModel)
@@ -419,7 +419,7 @@ class ChatActivity : AppCompatActivity(), MainService.Listener {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        mainServiceRepository.stopService()
+        brandedServiceClient.stopService()
     }
 
     override fun onDestroy() {
