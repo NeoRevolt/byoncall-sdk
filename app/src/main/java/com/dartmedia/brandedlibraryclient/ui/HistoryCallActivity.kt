@@ -20,12 +20,9 @@ import com.dartmedia.brandedlibraryclient.adapter.CallLogAdapter
 import com.dartmedia.brandedlibraryclient.databinding.ActivityHistoryCallBinding
 import com.dartmedia.brandedlibraryclient.ui.viewmodel.HistoryCallViewModel
 import com.dartmedia.brandedlibraryclient.ui.viewmodel.ViewModelFactory
+import com.dartmedia.brandedsdk.library.BrandedSDK
 import com.dartmedia.brandedsdk.model.SocketDataModel
 import com.dartmedia.brandedsdk.model.SocketDataTypeEnum
-import com.dartmedia.brandedsdk.repository.BrandedWebRTCClient
-import com.dartmedia.brandedsdk.service.BrandedService
-import com.dartmedia.brandedsdk.service.BrandedServiceClient
-import com.dartmedia.brandedsdk.socket.BrandedSocketClient
 import com.dartmedia.brandedsdk.utils.image.WhiteBackgroundTransformation
 import com.dartmedia.network.CallHistoryData
 import com.dartmedia.network.CallHistoryResponse
@@ -42,13 +39,9 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 
-class HistoryCallActivity : AppCompatActivity(), BrandedService.Listener {
+class HistoryCallActivity : AppCompatActivity(), BrandedSDK.CallListener {
 
-    private val socketClient by lazy { BrandedSocketClient }
-
-    private val webRTCClient by lazy { BrandedWebRTCClient.instance(this) }
-
-    private val serviceClient by lazy { BrandedServiceClient.instance(this) }
+    private var brandedSDK: BrandedSDK? = null
 
     private lateinit var binding: ActivityHistoryCallBinding
     private lateinit var callLogAdapter: CallLogAdapter
@@ -73,15 +66,15 @@ class HistoryCallActivity : AppCompatActivity(), BrandedService.Listener {
 
     private fun initMySession() {
         myPhone = intent.getStringExtra(MY_PHONE) ?: ""
-
         Log.d(TAG, "phoneNumber : $myPhone")
 
         if (myPhone.isEmpty() || myPhone == "") {
             finish()
         } else {
-            webRTCClient.connectSocket(socketUrl = SOCKET_URL, myPhone)
-            BrandedService.listener = this
-            serviceClient.startService(myPhone)
+            brandedSDK = BrandedSDK.initialize(this)
+            brandedSDK?.callListener = this
+            brandedSDK?.connectSocket(socketUrl = SOCKET_URL, myPhone)
+            brandedSDK?.startService(myPhone)
         }
     }
 
@@ -220,8 +213,8 @@ class HistoryCallActivity : AppCompatActivity(), BrandedService.Listener {
                 declineButton.setOnClickListener {
                     incomingCallLayout.isVisible = false
                     try {
-                        webRTCClient.sendRejectCall(data)
-                        webRTCClient.recordCallLog()//TODO (Zal): Record call log to DB
+                        brandedSDK?.sendRejectCall(data)
+                        brandedSDK?.recordCallLog()//TODO (Zal): Record call log to DB
                     } catch (e: Exception) {
                         e.printStackTrace()
                         Log.d(TAG, "$TAG Exception : ${e.message}")
@@ -274,8 +267,8 @@ class HistoryCallActivity : AppCompatActivity(), BrandedService.Listener {
 
             if (formattedDateTime.isNotEmpty()) {
                 try {
-                    webRTCClient.sendRejectCall(data)
-                    webRTCClient.recordCallLog()
+                    brandedSDK?.sendRejectCall(data)
+                    brandedSDK?.recordCallLog()
                     GlobalScope.launch(Dispatchers.Main) {
                         delay(1000)
                         // TODO send chat or make alarm
@@ -312,8 +305,8 @@ class HistoryCallActivity : AppCompatActivity(), BrandedService.Listener {
             val selectedItem = items[which]
             if (selectedItem.isNotEmpty()) {
                 try {
-                    webRTCClient.sendRejectCall(data)
-                    webRTCClient.recordCallLog()
+                    brandedSDK?.sendRejectCall(data)
+                    brandedSDK?.recordCallLog()
                     GlobalScope.launch(Dispatchers.Main) {
                         delay(1000)
                         // TODO send chat or make alarm
@@ -348,7 +341,7 @@ class HistoryCallActivity : AppCompatActivity(), BrandedService.Listener {
     }
 
     override fun onDestroy() {
-        socketClient.disconnectSocket()
+        brandedSDK?.disconnectSocket()
         super.onDestroy()
     }
 
