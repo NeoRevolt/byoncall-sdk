@@ -10,8 +10,6 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        // TODO(Zal): current WebRTC Library still in JCenter, find the newest one
-        jcenter()
 
     }
 }

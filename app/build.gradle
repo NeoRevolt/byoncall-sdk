@@ -52,7 +52,10 @@ dependencies {
 
     // Library
     implementation project(':brandedsdk')
-    implementation 'org.webrtc:google-webrtc:1.0.32006' // WebRTC
+
+    // WebRTC (Mesibo)
+    implementation 'com.mesibo.api:webrtc:1.0.5'
+
 //    implementation "com.google.dagger:hilt-android:2.44" // Hilt Dagger
 //    kapt "com.google.dagger:hilt-compiler:2.44" // Hilt Compiler
 
