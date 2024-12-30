@@ -32,7 +32,7 @@ import kotlinx.coroutines.withContext
 
 class CallActivity : AppCompatActivity(), BrandedSDK.EndCallListener {
 
-    private var brandedSDK: BrandedSDK? = null
+    private var brandedSDK = BrandedSDK.getInstance()
 
     private lateinit var requestScreenCaptureLauncher: ActivityResultLauncher<Intent>
     private lateinit var callLogViewModel: CallLogViewModel
@@ -92,7 +92,6 @@ class CallActivity : AppCompatActivity(), BrandedSDK.EndCallListener {
         } ?: kotlin.run {
             finish()
         }
-        brandedSDK = BrandedSDK.initialize(this)
         brandedSDK?.endCallListener = this
         targetName = intent.getStringExtra("targetName") ?: target
         targetImgUrl = intent.getStringExtra("targetImg")
