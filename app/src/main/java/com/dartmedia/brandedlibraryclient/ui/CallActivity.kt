@@ -19,7 +19,6 @@ import com.dartmedia.brandedlibraryclient.ui.viewmodel.CallLogViewModel
 import com.dartmedia.brandedlibraryclient.ui.viewmodel.ViewModelFactory
 import com.dartmedia.brandedsdk.library.BrandedSDK
 import com.dartmedia.brandedsdk.model.UserStatusEnum
-import com.dartmedia.brandedsdk.service.BrandedService
 import com.dartmedia.brandedsdk.utils.audio.manager.RTCAudioManager
 import com.dartmedia.brandedsdk.utils.date.DateUtils.getCurrentDateDetailed
 import com.dartmedia.brandedsdk.utils.extension.convertToHumanTime
@@ -62,11 +61,10 @@ class CallActivity : AppCompatActivity(), BrandedSDK.EndCallListener {
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val intent = result.data
-                //its time to give this intent to our service and service passes it to our webrtc client
-                BrandedService.screenPermissionIntent = intent
+                brandedSDK.setScreenPermissionIntent(intent)
                 isScreenCasting = true
                 updateUiToScreenCaptureIsOn()
-                brandedSDK?.toggleScreenShare(true)
+                brandedSDK.toggleScreenShare(true)
             }
         }
     }
@@ -92,7 +90,7 @@ class CallActivity : AppCompatActivity(), BrandedSDK.EndCallListener {
         } ?: kotlin.run {
             finish()
         }
-        brandedSDK?.endCallListener = this
+        brandedSDK.endCallListener = this
         targetName = intent.getStringExtra("targetName") ?: target
         targetImgUrl = intent.getStringExtra("targetImg")
         callMessage = intent.getStringExtra("message")
@@ -119,7 +117,7 @@ class CallActivity : AppCompatActivity(), BrandedSDK.EndCallListener {
 
         target?.let { target ->
             targetName?.let { targetName ->
-                brandedSDK?.observeTargetContact(target) {
+                brandedSDK.observeTargetContact(target) {
                     when (it) {
 
                         UserStatusEnum.ONLINE -> {
@@ -174,20 +172,24 @@ class CallActivity : AppCompatActivity(), BrandedSDK.EndCallListener {
                 switchCameraButton.isVisible = false
                 voiceCallLayouts.isVisible = true
                 voiceCallEndCallButton.setOnClickListener {
-                    brandedSDK?.sendEndCall()
+                    brandedSDK.sendEndCall()
                 }
             }
 
-            BrandedService.remoteSurfaceView = remoteView
-            BrandedService.localSurfaceView = localView
-            brandedSDK?.setupViews(isVideoCall, isCaller, target!!)
+            brandedSDK.setupViews(
+                isVideoCall = isVideoCall,
+                isCaller = isCaller,
+                target = target!!,
+                localSurfaceView = localView,
+                remoteSurfaceView = remoteView
+            )
 
             endCallButton.setOnClickListener {
-                brandedSDK?.sendEndCall()
+                brandedSDK.sendEndCall()
             }
 
             switchCameraButton.setOnClickListener {
-                brandedSDK?.switchCamera()
+                brandedSDK.switchCamera()
             }
         }
         setupMicToggleClicked()
@@ -213,10 +215,10 @@ class CallActivity : AppCompatActivity(), BrandedSDK.EndCallListener {
                             dialog.dismiss()
                         }.create().show()
                 } else {
-                    //we have to end screen casting
+                    // end screen casting
                     isScreenCasting = false
                     updateUiToScreenCaptureIsOff()
-                    brandedSDK?.toggleScreenShare(false)
+                    brandedSDK.toggleScreenShare(false)
                 }
             }
         }
@@ -255,32 +257,20 @@ class CallActivity : AppCompatActivity(), BrandedSDK.EndCallListener {
         binding.apply {
             toggleMicrophoneButton.setOnClickListener {
                 if (!isMicrophoneMuted) {
-                    //we should mute our mic
-                    //1. send a command to repository
-                    brandedSDK?.toggleAudio(true)
-                    //2. update ui to mic is muted
+                    brandedSDK.toggleAudio(true)
                     toggleMicrophoneButton.setImageResource(R.drawable.ic_mic_on)
                 } else {
-                    //we should set it back to normal
-                    //1. send a command to repository to make it back to normal status
-                    brandedSDK?.toggleAudio(false)
-                    //2. update ui
+                    brandedSDK.toggleAudio(false)
                     toggleMicrophoneButton.setImageResource(R.drawable.ic_mic_off)
                 }
                 isMicrophoneMuted = !isMicrophoneMuted
             }
             voiceCallMuteButton.setOnClickListener {
                 if (!isMicrophoneMuted) {
-                    //we should mute our mic
-                    //1. send a command to repository
-                    brandedSDK?.toggleAudio(true)
-                    //2. update ui to mic is muted
+                    brandedSDK.toggleAudio(true)
                     voiceCallMuteButton.setImageResource(R.drawable.ic_mic_on)
                 } else {
-                    //we should set it back to normal
-                    //1. send a command to repository to make it back to normal status
-                    brandedSDK?.toggleAudio(false)
-                    //2. update ui
+                    brandedSDK.toggleAudio(false)
                     voiceCallMuteButton.setImageResource(R.drawable.ic_mic_off)
                 }
                 isMicrophoneMuted = !isMicrophoneMuted
@@ -292,15 +282,14 @@ class CallActivity : AppCompatActivity(), BrandedSDK.EndCallListener {
         binding.apply {
             toggleAudioDevice.setOnClickListener {
                 if (isSpeakerMode) {
-                    //we should set it to earpiece mode
+                    // set it to earpiece mode
                     toggleAudioDevice.setImageResource(R.drawable.ic_speaker)
-                    //we should send a command to our service to switch between devices
-                    brandedSDK?.toggleAudioDevice(RTCAudioManager.AudioDevice.EARPIECE.name)
+                    brandedSDK.toggleAudioDevice(RTCAudioManager.AudioDevice.EARPIECE.name)
 
                 } else {
-                    //we should set it to speaker mode
+                    // set it to speaker mode
                     toggleAudioDevice.setImageResource(R.drawable.ic_ear)
-                    brandedSDK?.toggleAudioDevice(RTCAudioManager.AudioDevice.SPEAKER_PHONE.name)
+                    brandedSDK.toggleAudioDevice(RTCAudioManager.AudioDevice.SPEAKER_PHONE.name)
 
                 }
                 isSpeakerMode = !isSpeakerMode
@@ -312,10 +301,10 @@ class CallActivity : AppCompatActivity(), BrandedSDK.EndCallListener {
         binding.apply {
             toggleCameraButton.setOnClickListener {
                 if (!isCameraMuted) {
-                    brandedSDK?.toggleVideo(true)
+                    brandedSDK.toggleVideo(true)
                     toggleCameraButton.setImageResource(R.drawable.ic_camera_on)
                 } else {
-                    brandedSDK?.toggleVideo(false)
+                    brandedSDK.toggleVideo(false)
                     toggleCameraButton.setImageResource(R.drawable.ic_camera_off)
                 }
 
@@ -330,15 +319,11 @@ class CallActivity : AppCompatActivity(), BrandedSDK.EndCallListener {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        brandedSDK?.sendEndCall()
+        brandedSDK.sendEndCall()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        BrandedService.remoteSurfaceView?.release()
-        BrandedService.remoteSurfaceView = null
-
-        BrandedService.localSurfaceView?.release()
-        BrandedService.localSurfaceView = null
+        brandedSDK.clearSurfaceView()
     }
 }

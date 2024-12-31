@@ -2,12 +2,14 @@ package com.dartmedia.brandedsdk.library
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import com.dartmedia.brandedsdk.model.SocketDataModel
 import com.dartmedia.brandedsdk.model.UserStatusEnum
 import com.dartmedia.brandedsdk.repository.BrandedWebRTCClient
 import com.dartmedia.brandedsdk.service.BrandedService
 import com.dartmedia.brandedsdk.service.BrandedServiceClient
 import com.dartmedia.brandedsdk.socket.BrandedSocketClient
+import org.webrtc.SurfaceViewRenderer
 
 class BrandedSDK private constructor(
     private val context: Context,
@@ -103,8 +105,35 @@ class BrandedSDK private constructor(
         serviceClient.sendEndCall()
     }
 
-    fun setupViews(isVideoCall: Boolean, isCaller: Boolean, target: String) {
+    fun setupViews(
+        isVideoCall: Boolean,
+        isCaller: Boolean,
+        target: String,
+        localSurfaceView: SurfaceViewRenderer?,
+        remoteSurfaceView: SurfaceViewRenderer?
+    ) {
         serviceClient.setupViews(isVideoCall, isCaller, target)
+        setSurfaceView(localSurfaceView, remoteSurfaceView)
+    }
+
+    fun setSurfaceView(local: SurfaceViewRenderer?, remote: SurfaceViewRenderer?) {
+        BrandedService.apply {
+            localSurfaceView = local
+            remoteSurfaceView = remote
+        }
+    }
+
+    fun clearSurfaceView() {
+        BrandedService.apply {
+            remoteSurfaceView?.release()
+            remoteSurfaceView = null
+            localSurfaceView?.release()
+            localSurfaceView = null
+        }
+    }
+
+    fun setScreenPermissionIntent(intent: Intent?) {
+        BrandedService.screenPermissionIntent = intent
     }
 
     override fun onCallReceived(model: SocketDataModel) {
