@@ -3,6 +3,7 @@ package com.dartmedia.brandedsdk.library
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import com.dartmedia.brandedsdk.model.SocketDataModel
 import com.dartmedia.brandedsdk.model.UserStatusEnum
 import com.dartmedia.brandedsdk.repository.BrandedWebRTCClient
@@ -46,7 +47,7 @@ class BrandedSDK private constructor(
 
         fun getInstance(): BrandedSDK {
             return instance
-                ?: throw IllegalStateException("LibraryManager is not initialized. Call initialize() first.")
+                ?: throw IllegalStateException("BrandedSDK is not initialized. Call BrandedSDK.initialize() first.")
         }
     }
 
@@ -57,6 +58,10 @@ class BrandedSDK private constructor(
 
     fun connectSocket(socketUrl: String, phoneNumber: String) {
         webRTCClient.connectSocket(socketUrl = socketUrl, myPhone = phoneNumber)
+    }
+
+    fun sendConnectionRequest(socketDataModel: SocketDataModel) {
+        webRTCClient.sendConnectionRequest(socketDataModel)
     }
 
     fun sendRejectCall(socketDataModel: SocketDataModel) {
@@ -73,12 +78,29 @@ class BrandedSDK private constructor(
         }
     }
 
+    fun sendEventToSocket(socketDataModel: SocketDataModel) {
+        socketClient.sendEventToSocket(socketDataModel)
+    }
+
+    fun observeChatFromSocket(
+        owner: AppCompatActivity,
+        chat: (SocketDataModel) -> Unit
+    ) {
+        socketClient.onLatestChat.observe(owner) {
+            chat(it)
+        }
+    }
+
     fun disconnectSocket() {
         socketClient.disconnectSocket()
     }
 
     fun startService(phoneNumber: String) {
         serviceClient.startService(username = phoneNumber)
+    }
+
+    fun stopService() {
+        serviceClient.stopService()
     }
 
     fun toggleScreenShare(isStarting: Boolean) {

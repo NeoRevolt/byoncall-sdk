@@ -18,12 +18,9 @@ import com.dartmedia.brandedlibraryclient.R
 import com.dartmedia.brandedlibraryclient.adapter.ChatAdapter
 import com.dartmedia.brandedlibraryclient.databinding.ActivityMainBinding
 import com.dartmedia.brandedlibraryclient.model.ChatModel
+import com.dartmedia.brandedsdk.library.BrandedSDK
 import com.dartmedia.brandedsdk.model.SocketDataModel
 import com.dartmedia.brandedsdk.model.SocketDataTypeEnum
-import com.dartmedia.brandedsdk.repository.BrandedWebRTCClient
-import com.dartmedia.brandedsdk.service.BrandedService
-import com.dartmedia.brandedsdk.service.BrandedServiceClient
-import com.dartmedia.brandedsdk.socket.BrandedSocketClient
 import com.dartmedia.brandedsdk.utils.image.WhiteBackgroundTransformation
 import com.google.gson.Gson
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -38,13 +35,9 @@ import java.util.Locale
 import java.util.UUID
 
 
-class ChatActivity : AppCompatActivity(), BrandedService.Listener {
+class ChatActivity : AppCompatActivity(), BrandedSDK.CallListener {
 
-    private val socketClient by lazy { BrandedSocketClient }
-
-    private val webRTCClient by lazy { BrandedWebRTCClient.instance(this) }
-
-    private val brandedServiceClient by lazy { BrandedServiceClient.instance(this) }
+    private var brandedSDK: BrandedSDK? = null
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var chatAdapter: ChatAdapter
@@ -80,9 +73,10 @@ class ChatActivity : AppCompatActivity(), BrandedService.Listener {
         if (myPhone.isEmpty() || myPhone == "") {
             finish()
         } else {
-            webRTCClient.connectSocket(socketUrl = SOCKET_URL, myPhone)
-            BrandedService.listener = this
-            brandedServiceClient.startService(myPhone)
+            brandedSDK = BrandedSDK.initialize(this)
+            brandedSDK?.callListener = this
+            brandedSDK?.connectSocket(SOCKET_URL, myPhone)
+            brandedSDK?.startService(myPhone)
             chatAdapter = ChatAdapter()
             binding.rvChat.apply {
                 layoutManager = LinearLayoutManager(this@ChatActivity)
@@ -97,7 +91,7 @@ class ChatActivity : AppCompatActivity(), BrandedService.Listener {
 
             backBtn.setOnClickListener {
 //                onBackPressedDispatcher.onBackPressed()
-                brandedServiceClient.stopService()
+                brandedSDK?.stopService()
                 finish()
             }
 
@@ -121,7 +115,7 @@ class ChatActivity : AppCompatActivity(), BrandedService.Listener {
 
             audioCallBtn.setOnClickListener {
                 try {
-                    webRTCClient.sendConnectionRequest(
+                    brandedSDK?.sendConnectionRequest(
                         SocketDataModel(
                             type = SocketDataTypeEnum.StartAudioCall,
                             senderId = myPhone,
@@ -151,7 +145,7 @@ class ChatActivity : AppCompatActivity(), BrandedService.Listener {
 
             videoCallBtn.setOnClickListener {
                 try {
-                    webRTCClient.sendConnectionRequest(
+                    brandedSDK?.sendConnectionRequest(
                         SocketDataModel(
                             type = SocketDataTypeEnum.StartVideoCall,
                             senderId = myPhone,
@@ -182,7 +176,7 @@ class ChatActivity : AppCompatActivity(), BrandedService.Listener {
     }
 
     private fun sendChatMessage(chatModel: ChatModel) {
-        socketClient.sendEventToSocket(
+        brandedSDK?.sendEventToSocket(
             SocketDataModel(
                 type = SocketDataTypeEnum.StartChatting,
                 senderId = myPhone,
@@ -193,7 +187,7 @@ class ChatActivity : AppCompatActivity(), BrandedService.Listener {
     }
 
     private fun observeChatFromSocket(myUserId: String) {
-        socketClient.onLatestChat.observe(this) { chatFromSocket ->
+        brandedSDK?.observeChatFromSocket(this) { chatFromSocket ->
             when (chatFromSocket.type) {
                 SocketDataTypeEnum.StartChatting -> {
                     Log.d(TAG, "observeChat : $chatFromSocket")
@@ -277,8 +271,8 @@ class ChatActivity : AppCompatActivity(), BrandedService.Listener {
                 declineButton.setOnClickListener {
                     incomingCallLayout.isVisible = false
                     try {
-                        webRTCClient.sendRejectCall(data)
-                        webRTCClient.recordCallLog()//TODO (Zal): Record call log to DB
+                        brandedSDK?.sendRejectCall(data)
+                        brandedSDK?.recordCallLog()//TODO (Zal): Record call log to DB
                     } catch (e: Exception) {
                         e.printStackTrace()
                         Log.d(TAG, "$TAG Exception : ${e.message}")
@@ -342,8 +336,8 @@ class ChatActivity : AppCompatActivity(), BrandedService.Listener {
                     receiverId = targetPhone,
                 )
                 try {
-                    webRTCClient.sendRejectCall(data)
-                    webRTCClient.recordCallLog()
+                    brandedSDK?.sendRejectCall(data)
+                    brandedSDK?.recordCallLog()
                     GlobalScope.launch(Dispatchers.Main) {
                         delay(1000)
                         sendChatMessage(chatModel)
@@ -392,8 +386,8 @@ class ChatActivity : AppCompatActivity(), BrandedService.Listener {
                     receiverId = targetPhone,
                 )
                 try {
-                    webRTCClient.sendRejectCall(data)
-                    webRTCClient.recordCallLog()
+                    brandedSDK?.sendRejectCall(data)
+                    brandedSDK?.recordCallLog()
                     GlobalScope.launch(Dispatchers.Main) {
                         delay(1000)
                         sendChatMessage(chatModel)
@@ -419,11 +413,11 @@ class ChatActivity : AppCompatActivity(), BrandedService.Listener {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        brandedServiceClient.stopService()
+        brandedSDK?.stopService()
     }
 
     override fun onDestroy() {
-        socketClient.disconnectSocket()
+        brandedSDK?.disconnectSocket()
         super.onDestroy()
     }
 
