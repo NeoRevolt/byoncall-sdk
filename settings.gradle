@@ -13,6 +13,6 @@ dependencyResolutionManagement {
 
     }
 }
-rootProject.name = "BrandedLibraryClient"
+rootProject.name = "ByonCallSDKClient"
 include ':app'
 include ':brandedsdk'
