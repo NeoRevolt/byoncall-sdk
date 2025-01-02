@@ -11,7 +11,6 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/brandedsdk" />
-            <option value="$PROJECT_DIR$/brandedsdkv2" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

@@ -16,4 +16,3 @@ dependencyResolutionManagement {
 rootProject.name = "BrandedLibraryClient"
 include ':app'
 include ':brandedsdk'
-include ':brandedsdkv2'
