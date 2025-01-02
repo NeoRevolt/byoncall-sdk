@@ -12,6 +12,7 @@ import androidx.core.app.NotificationCompat
 import com.dartmedia.brandedsdk.R
 import com.dartmedia.brandedsdk.model.SocketDataModel
 import com.dartmedia.brandedsdk.model.SocketDataTypeEnum
+import com.dartmedia.brandedsdk.model.UserStatusEnum
 import com.dartmedia.brandedsdk.model.isValid
 import com.dartmedia.brandedsdk.repository.BrandedWebRTCClient
 import com.dartmedia.brandedsdk.service.BrandedServiceActionsEnum.END_CALL
@@ -41,8 +42,8 @@ class BrandedService : Service(), BrandedWebRTCClient.Listener {
 
     companion object {
         const val TAG = "BrandedService"
-        var listener: Listener? = null
-        var endCallListener: EndCallListener? = null
+        var callListener: CallListener? = null
+        var inCallListener: InCallListener? = null
         var localSurfaceView: SurfaceViewRenderer? = null
         var remoteSurfaceView: SurfaceViewRenderer? = null
         var screenPermissionIntent: Intent? = null
@@ -144,7 +145,7 @@ class BrandedService : Service(), BrandedWebRTCClient.Listener {
 
     private fun endCallAndRestartRepository() {
         brandedWebRTCClient.endCall()
-        endCallListener?.onCallEnded()
+        inCallListener?.onCallEnded()
         username?.let { username ->
             brandedWebRTCClient.initWebrtcClient(username)
         }
@@ -169,12 +170,11 @@ class BrandedService : Service(), BrandedWebRTCClient.Listener {
     }
 
     private fun handleStartService(incomingIntent: Intent) {
-        //TODO (Zal) : Handle Service Foreground / Background
         if (!isServiceRunning) {
             isServiceRunning = true
             username = incomingIntent.getStringExtra("username")
 
-            if (username == null){
+            if (username == null) {
                 Log.e(TAG, "handleStartService: username is null")
                 return
             }
@@ -184,7 +184,7 @@ class BrandedService : Service(), BrandedWebRTCClient.Listener {
             brandedWebRTCClient.observeSocket()
             brandedWebRTCClient.initWebrtcClient(username!!)
 
-        } else{
+        } else {
             Log.d(TAG, "handleStartService : Service is already running")
         }
     }
@@ -221,11 +221,11 @@ class BrandedService : Service(), BrandedWebRTCClient.Listener {
             when (data.type) {
                 SocketDataTypeEnum.StartVideoCall,
                 SocketDataTypeEnum.StartAudioCall -> {
-                    listener?.onCallReceived(data)
+                    callListener?.onCallReceived(data)
                 }
 
                 SocketDataTypeEnum.EndCall -> {
-                    listener?.onCallDeclined(data)
+                    callListener?.onCallDeclined(data)
                 }
 
                 else -> Unit
@@ -235,18 +235,23 @@ class BrandedService : Service(), BrandedWebRTCClient.Listener {
         }
     }
 
+    override fun onCallStatusChanged(userStatusEnum: UserStatusEnum) {
+        inCallListener?.onCallStatusChanged(userStatusEnum)
+    }
+
     override fun endCall() {
         // when retrieving end call from other peer
         stopForeground(STOP_FOREGROUND_REMOVE)
         endCallAndRestartRepository()
     }
 
-    interface Listener {
+    interface CallListener {
         fun onCallReceived(model: SocketDataModel)
         fun onCallDeclined(model: SocketDataModel)
     }
 
-    interface EndCallListener {
+    interface InCallListener {
+        fun onCallStatusChanged(userStatusEnum: UserStatusEnum)
         fun onCallEnded()
     }
 }

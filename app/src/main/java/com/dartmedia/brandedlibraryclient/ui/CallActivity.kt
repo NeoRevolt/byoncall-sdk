@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.media.projection.MediaProjectionManager
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -29,7 +30,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class CallActivity : AppCompatActivity(), BrandedSDK.EndCallListener {
+class CallActivity : AppCompatActivity(), BrandedSDK.InCallListener {
 
     private var brandedSDK = BrandedSDK.getInstance()
 
@@ -90,7 +91,7 @@ class CallActivity : AppCompatActivity(), BrandedSDK.EndCallListener {
         } ?: kotlin.run {
             finish()
         }
-        brandedSDK.endCallListener = this
+        brandedSDK.inCallListener = this
         targetName = intent.getStringExtra("targetName") ?: target
         targetImgUrl = intent.getStringExtra("targetImg")
         callMessage = intent.getStringExtra("message")
@@ -124,8 +125,6 @@ class CallActivity : AppCompatActivity(), BrandedSDK.EndCallListener {
                             binding.apply {
                                 callTitleTv.text = targetName
                                 voiceCallCallerName.text = targetName
-                                callTimerTv.text = "Calling..."
-                                voiceCallStatusText.text = "Calling..."
                             }
                         }
 
@@ -134,8 +133,6 @@ class CallActivity : AppCompatActivity(), BrandedSDK.EndCallListener {
                                 //                            callTimeoutTimer.cancel()
                                 callTitleTv.text = targetName
                                 voiceCallCallerName.text = targetName
-                                callTimerTv.text = "Connecting..."
-                                voiceCallStatusText.text = "Connecting..."
                             }
                         }
 
@@ -309,6 +306,46 @@ class CallActivity : AppCompatActivity(), BrandedSDK.EndCallListener {
                 }
 
                 isCameraMuted = !isCameraMuted
+            }
+        }
+    }
+
+    override fun onCallStatusChanged(statusEnum: UserStatusEnum) {
+        Log.d("CallActivity", "onCallStatusChanged : ${statusEnum.name}")
+        runOnUiThread {
+            when (statusEnum) {
+
+                UserStatusEnum.CALLING -> {
+                    binding.apply {
+                        callStatusTv.text = "Calling..."
+                        callStatusVideoTv.text = "Calling..."
+                    }
+                }
+
+
+                UserStatusEnum.IN_CALL -> {
+                    binding.apply {
+                        callStatusTv.text = "In-Call"
+                        callStatusVideoTv.text = "In-Call"
+                    }
+                }
+
+                UserStatusEnum.FAILED -> {
+                    binding.apply {
+                        callStatusTv.text = "Failed"
+                        callStatusVideoTv.text = "Failed"
+                    }
+                }
+
+                UserStatusEnum.OFFLINE -> {
+                    binding.apply {
+                        callStatusTv.text = "Offline"
+                        callStatusVideoTv.text = "Offline"
+                    }
+                }
+
+
+                else -> {}
             }
         }
     }

@@ -14,7 +14,7 @@ import org.webrtc.SurfaceViewRenderer
 
 class BrandedSDK private constructor(
     private val context: Context,
-) : BrandedService.Listener, BrandedService.EndCallListener {
+) : BrandedService.CallListener, BrandedService.InCallListener {
 
     private val socketClient by lazy { BrandedSocketClient }
     private val webRTCClient by lazy { BrandedWebRTCClient.instance(context) }
@@ -25,12 +25,13 @@ class BrandedSDK private constructor(
         fun onCallDeclined(model: SocketDataModel)
     }
 
-    interface EndCallListener {
+    interface InCallListener {
+        fun onCallStatusChanged(statusEnum: UserStatusEnum)
         fun onCallEnded()
     }
 
     var callListener: CallListener? = null
-    var endCallListener: EndCallListener? = null
+    var inCallListener: InCallListener? = null
 
     companion object {
         @SuppressLint("StaticFieldLeak")
@@ -52,8 +53,8 @@ class BrandedSDK private constructor(
     }
 
     init {
-        BrandedService.listener = this
-        BrandedService.endCallListener = this
+        BrandedService.callListener = this
+        BrandedService.inCallListener = this
     }
 
     fun connectSocket(socketUrl: String, phoneNumber: String) {
@@ -166,7 +167,11 @@ class BrandedSDK private constructor(
         callListener?.onCallDeclined(model)
     }
 
+    override fun onCallStatusChanged(userStatusEnum: UserStatusEnum) {
+        inCallListener?.onCallStatusChanged(userStatusEnum)
+    }
+
     override fun onCallEnded() {
-        endCallListener?.onCallEnded()
+        inCallListener?.onCallEnded()
     }
 }

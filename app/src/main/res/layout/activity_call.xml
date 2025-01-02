@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:text="Connecting..."
+            android:text="00:00"
             android:textColor="@color/white"
             android:textSize="14sp"
             app:drawableStartCompat="@drawable/ic_record"
@@ -53,6 +53,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="User A" />
+
+        <TextView
+            android:id="@+id/callStatusVideoTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Calling" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
@@ -119,7 +130,7 @@
         android:elevation="5dp"
         android:paddingBottom="10dp"
         android:visibility="gone"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <LinearLayout
             android:id="@+id/textLinearLayout"
@@ -135,15 +146,16 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
+                android:id="@+id/callStatusTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="VOIP"
                 android:textColor="@color/gray"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Calling..." />
 
         </LinearLayout>
 

@@ -133,6 +133,7 @@ class BrandedWebRTCClient(
 
     interface Listener {
         fun onLatestEventReceived(data: SocketDataModel)
+        fun onCallStatusChanged(userStatusEnum: UserStatusEnum)
         fun endCall()
     }
 
@@ -170,11 +171,7 @@ class BrandedWebRTCClient(
                 super.onConnectionChange(newState)
                 when (newState) {
                     PeerConnection.PeerConnectionState.CONNECTING -> {
-                        // 1. change my status to in calling
-                        changeMyStatus(UserStatusEnum.CALLING)
-                        // 2. clear latest event inside my user section in DB
-//                        TODO(Zal) : Make User Status logic when DB is available
-//                        firebaseClient.clearLatestEvent() //
+                        listener?.onCallStatusChanged(UserStatusEnum.CALLING)
                         Log.d(
                             TAG,
                             "onConnectionChange : connection with $targetPhone is CONNECTING"
@@ -182,11 +179,7 @@ class BrandedWebRTCClient(
                     }
 
                     PeerConnection.PeerConnectionState.CONNECTED -> {
-                        // 1. change my status to in call
-                        changeMyStatus(UserStatusEnum.IN_CALL)
-                        // 2. clear latest event inside my user section in DB
-//                        TODO(Zal) : Make User Status logic when DB is available
-//                        firebaseClient.clearLatestEvent() //
+                        listener?.onCallStatusChanged(UserStatusEnum.IN_CALL)
                         Log.d(
                             TAG,
                             "onConnectionChange : connection with $targetPhone is CONNECTED"
@@ -194,6 +187,7 @@ class BrandedWebRTCClient(
                     }
 
                     PeerConnection.PeerConnectionState.DISCONNECTED -> {
+                        listener?.onCallStatusChanged(UserStatusEnum.CALLING)
                         Log.e(
                             TAG,
                             "onConnectionChange : connection with $targetPhone is DISCONNECTED"
@@ -201,6 +195,7 @@ class BrandedWebRTCClient(
                     }
 
                     PeerConnection.PeerConnectionState.FAILED -> {
+                        listener?.onCallStatusChanged(UserStatusEnum.FAILED)
                         Log.e(
                             TAG,
                             "onConnectionChange : connection with $targetPhone is FAILED"
@@ -208,6 +203,7 @@ class BrandedWebRTCClient(
                     }
 
                     PeerConnection.PeerConnectionState.CLOSED -> {
+                        listener?.onCallStatusChanged(UserStatusEnum.OFFLINE)
                         Log.e(
                             TAG,
                             "onConnectionChange : connection with $targetPhone is CLOSED"
