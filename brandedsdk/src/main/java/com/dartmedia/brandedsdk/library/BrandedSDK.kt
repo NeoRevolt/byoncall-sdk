@@ -40,9 +40,15 @@ class BrandedSDK private constructor(
 
         fun initialize(
             context: Context,
+            socketUrl: String,
+            myPhone: String
         ): BrandedSDK {
             return instance ?: synchronized(this) {
-                instance ?: BrandedSDK(context.applicationContext).also { instance = it }
+                instance ?: BrandedSDK(context.applicationContext).also {
+                    instance = it
+                    it.connectSocket(socketUrl, myPhone)
+                    it.startService(myPhone)
+                }
             }
         }
 
@@ -57,7 +63,7 @@ class BrandedSDK private constructor(
         BrandedService.inCallListener = this
     }
 
-    fun connectSocket(socketUrl: String, phoneNumber: String) {
+    private fun connectSocket(socketUrl: String, phoneNumber: String) {
         webRTCClient.connectSocket(socketUrl = socketUrl, myPhone = phoneNumber)
     }
 
@@ -96,7 +102,7 @@ class BrandedSDK private constructor(
         socketClient.disconnectSocket()
     }
 
-    fun startService(phoneNumber: String) {
+    private fun startService(phoneNumber: String) {
         serviceClient.startService(username = phoneNumber)
     }
 

@@ -71,10 +71,12 @@ class HistoryCallActivity : AppCompatActivity(), BrandedSDK.CallListener {
         if (myPhone.isEmpty() || myPhone == "") {
             finish()
         } else {
-            brandedSDK = BrandedSDK.initialize(this)
+            brandedSDK = BrandedSDK.initialize(
+                this,
+                socketUrl = SOCKET_URL,
+                myPhone = myPhone
+            )
             brandedSDK?.callListener = this
-            brandedSDK?.connectSocket(socketUrl = SOCKET_URL, myPhone)
-            brandedSDK?.startService(myPhone)
         }
     }
 
