@@ -57,21 +57,21 @@ class LoginActivity : AppCompatActivity() {
                                     imageUrl = "https://dartmedia.co.id/images/logo_dartmedia.png"
                                 )
                             }
-//                            val intent =
-//                                Intent(this@LoginActivity, HistoryCallActivity::class.java).apply {
-//                                    putExtra(HistoryCallActivity.MY_PHONE, phoneNumberFull)
-//                                }
-//                            startActivity(intent)
-
                             val intent =
-                                Intent(this@LoginActivity, ChatActivity::class.java).apply {
-                                    putExtra(ChatActivity.MY_PHONE, phoneNumberFull)
-                                    putExtra(ChatActivity.TARGET_PHONE, "+6281905598577")
-                                    putExtra(ChatActivity.MY_BRAND_NAME, "Client")
-                                    putExtra(ChatActivity.MY_IMAGE_URL, "https://dartmedia.co.id/images/logo_dartmedia.png")
-                                    putExtra(ChatActivity.CALL_MESSAGE, "Client Test")
+                                Intent(this@LoginActivity, HistoryCallActivity::class.java).apply {
+                                    putExtra(HistoryCallActivity.MY_PHONE, phoneNumberFull)
                                 }
                             startActivity(intent)
+
+//                            val intent =
+//                                Intent(this@LoginActivity, ChatActivity::class.java).apply {
+//                                    putExtra(ChatActivity.MY_PHONE, phoneNumberFull)
+//                                    putExtra(ChatActivity.TARGET_PHONE, "+6281905598577")
+//                                    putExtra(ChatActivity.MY_BRAND_NAME, "Client")
+//                                    putExtra(ChatActivity.MY_IMAGE_URL, "https://dartmedia.co.id/images/logo_dartmedia.png")
+//                                    putExtra(ChatActivity.CALL_MESSAGE, "Client Test")
+//                                }
+//                            startActivity(intent)
                         }
                     }
                 } else {
