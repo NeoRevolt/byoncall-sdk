@@ -117,7 +117,7 @@ class ChatActivity : AppCompatActivity(), ByonCallSDK.CallListener {
 
             audioCallBtn.setOnClickListener {
                 try {
-                    byonCallSDK?.sendConnectionRequest(
+                    byonCallSDK?.startCall(
                         SocketDataModel(
                             type = SocketDataTypeEnum.StartAudioCall,
                             senderId = myPhone,
@@ -147,7 +147,7 @@ class ChatActivity : AppCompatActivity(), ByonCallSDK.CallListener {
 
             videoCallBtn.setOnClickListener {
                 try {
-                    byonCallSDK?.sendConnectionRequest(
+                    byonCallSDK?.startCall(
                         SocketDataModel(
                             type = SocketDataTypeEnum.StartVideoCall,
                             senderId = myPhone,
@@ -178,7 +178,7 @@ class ChatActivity : AppCompatActivity(), ByonCallSDK.CallListener {
     }
 
     private fun sendChatMessage(chatModel: ChatModel) {
-        byonCallSDK?.sendEventToSocket(
+        byonCallSDK?.sendChatToSocket(
             SocketDataModel(
                 type = SocketDataTypeEnum.StartChatting,
                 senderId = myPhone,
@@ -273,7 +273,7 @@ class ChatActivity : AppCompatActivity(), ByonCallSDK.CallListener {
                 declineButton.setOnClickListener {
                     incomingCallLayout.isVisible = false
                     try {
-                        byonCallSDK?.sendRejectCall(data)
+                        byonCallSDK?.rejectCall(data)
                         byonCallSDK?.recordCallLog()//TODO (Zal): Record call log to DB
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -338,7 +338,7 @@ class ChatActivity : AppCompatActivity(), ByonCallSDK.CallListener {
                     receiverId = targetPhone,
                 )
                 try {
-                    byonCallSDK?.sendRejectCall(data)
+                    byonCallSDK?.rejectCall(data)
                     byonCallSDK?.recordCallLog()
                     GlobalScope.launch(Dispatchers.Main) {
                         delay(1000)
@@ -388,7 +388,7 @@ class ChatActivity : AppCompatActivity(), ByonCallSDK.CallListener {
                     receiverId = targetPhone,
                 )
                 try {
-                    byonCallSDK?.sendRejectCall(data)
+                    byonCallSDK?.rejectCall(data)
                     byonCallSDK?.recordCallLog()
                     GlobalScope.launch(Dispatchers.Main) {
                         delay(1000)

@@ -67,12 +67,29 @@ class ByonCallSDK private constructor(
         webRTCClient.connectSocket(socketUrl = socketUrl, myPhone = phoneNumber)
     }
 
-    fun sendConnectionRequest(socketDataModel: SocketDataModel) {
+    private fun startService(phoneNumber: String) {
+        serviceClient.startService(username = phoneNumber)
+    }
+
+
+    fun startCall(socketDataModel: SocketDataModel) {
         webRTCClient.sendConnectionRequest(socketDataModel)
     }
 
-    fun sendRejectCall(socketDataModel: SocketDataModel) {
+    fun rejectCall(socketDataModel: SocketDataModel) {
         webRTCClient.sendRejectCall(socketDataModel)
+    }
+
+    fun endCall() {
+        serviceClient.sendEndCall()
+    }
+
+    fun disconnectSocket() {
+        socketClient.disconnectSocket()
+    }
+
+    fun stopService() {
+        serviceClient.stopService()
     }
 
     fun recordCallLog() {
@@ -85,7 +102,7 @@ class ByonCallSDK private constructor(
         }
     }
 
-    fun sendEventToSocket(socketDataModel: SocketDataModel) {
+    fun sendChatToSocket(socketDataModel: SocketDataModel) {
         socketClient.sendEventToSocket(socketDataModel)
     }
 
@@ -96,18 +113,6 @@ class ByonCallSDK private constructor(
         socketClient.onLatestChat.observe(owner) {
             chat(it)
         }
-    }
-
-    fun disconnectSocket() {
-        socketClient.disconnectSocket()
-    }
-
-    private fun startService(phoneNumber: String) {
-        serviceClient.startService(username = phoneNumber)
-    }
-
-    fun stopService() {
-        serviceClient.stopService()
     }
 
     fun toggleScreenShare(isStarting: Boolean) {
@@ -130,9 +135,6 @@ class ByonCallSDK private constructor(
         serviceClient.toggleVideo(shouldBeMuted)
     }
 
-    fun sendEndCall() {
-        serviceClient.sendEndCall()
-    }
 
     fun setupViews(
         isVideoCall: Boolean,

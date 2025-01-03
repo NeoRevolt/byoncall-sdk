@@ -215,7 +215,7 @@ class HistoryCallActivity : AppCompatActivity(), ByonCallSDK.CallListener {
                 declineButton.setOnClickListener {
                     incomingCallLayout.isVisible = false
                     try {
-                        byonCallSDK?.sendRejectCall(data)
+                        byonCallSDK?.rejectCall(data)
                         byonCallSDK?.recordCallLog()//TODO (Zal): Record call log to DB
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -269,7 +269,7 @@ class HistoryCallActivity : AppCompatActivity(), ByonCallSDK.CallListener {
 
             if (formattedDateTime.isNotEmpty()) {
                 try {
-                    byonCallSDK?.sendRejectCall(data)
+                    byonCallSDK?.rejectCall(data)
                     byonCallSDK?.recordCallLog()
                     GlobalScope.launch(Dispatchers.Main) {
                         delay(1000)
@@ -307,7 +307,7 @@ class HistoryCallActivity : AppCompatActivity(), ByonCallSDK.CallListener {
             val selectedItem = items[which]
             if (selectedItem.isNotEmpty()) {
                 try {
-                    byonCallSDK?.sendRejectCall(data)
+                    byonCallSDK?.rejectCall(data)
                     byonCallSDK?.recordCallLog()
                     GlobalScope.launch(Dispatchers.Main) {
                         delay(1000)

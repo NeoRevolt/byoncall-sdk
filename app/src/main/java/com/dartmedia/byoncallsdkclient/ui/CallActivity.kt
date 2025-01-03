@@ -14,16 +14,16 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.dartmedia.byoncallsdkclient.R
-import com.dartmedia.byoncallsdkclient.databinding.ActivityCallBinding
-import com.dartmedia.byoncallsdkclient.ui.viewmodel.CallLogViewModel
-import com.dartmedia.byoncallsdkclient.ui.viewmodel.ViewModelFactory
 import com.dartmedia.byoncallsdk.libraryapi.ByonCallSDK
 import com.dartmedia.byoncallsdk.model.UserStatusEnum
 import com.dartmedia.byoncallsdk.utils.audio.manager.RTCAudioManager
 import com.dartmedia.byoncallsdk.utils.date.DateUtils.getCurrentDateDetailed
 import com.dartmedia.byoncallsdk.utils.extension.convertToHumanTime
 import com.dartmedia.byoncallsdk.utils.image.WhiteBackgroundTransformation
+import com.dartmedia.byoncallsdkclient.R
+import com.dartmedia.byoncallsdkclient.databinding.ActivityCallBinding
+import com.dartmedia.byoncallsdkclient.ui.viewmodel.CallLogViewModel
+import com.dartmedia.byoncallsdkclient.ui.viewmodel.ViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -169,7 +169,7 @@ class CallActivity : AppCompatActivity(), ByonCallSDK.InCallListener {
                 switchCameraButton.isVisible = false
                 voiceCallLayouts.isVisible = true
                 voiceCallEndCallButton.setOnClickListener {
-                    byonCallSDK.sendEndCall()
+                    byonCallSDK.endCall()
                 }
             }
 
@@ -182,7 +182,7 @@ class CallActivity : AppCompatActivity(), ByonCallSDK.InCallListener {
             )
 
             endCallButton.setOnClickListener {
-                byonCallSDK.sendEndCall()
+                byonCallSDK.endCall()
             }
 
             switchCameraButton.setOnClickListener {
@@ -356,7 +356,7 @@ class CallActivity : AppCompatActivity(), ByonCallSDK.InCallListener {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        byonCallSDK.sendEndCall()
+        byonCallSDK.endCall()
     }
 
     override fun onDestroy() {
