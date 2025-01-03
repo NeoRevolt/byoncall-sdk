@@ -38,7 +38,10 @@ class ByonCallSDK private constructor(
         @Volatile
         private var instance: ByonCallSDK? = null
 
-        fun initialize(
+        /**
+         * Initialize ByonCallSDK Session, connect Socket and start Services
+         */
+        fun startSession(
             context: Context,
             socketUrl: String,
             myPhone: String
@@ -54,7 +57,7 @@ class ByonCallSDK private constructor(
 
         fun getInstance(): ByonCallSDK {
             return instance
-                ?: throw IllegalStateException("BrandedSDK is not initialized. Call BrandedSDK.initialize() first.")
+                ?: throw IllegalStateException("CallSDK is not initialized. startSession() first.")
         }
     }
 
@@ -72,37 +75,56 @@ class ByonCallSDK private constructor(
     }
 
 
+    /**
+     * Validate instance initialization.
+     */
+    private fun validateSession() {
+        if (instance == null) {
+            throw IllegalStateException("CallSDK is not initialized. startSession() first.")
+        }
+    }
+
+    /**
+     * Stop Byon call session, also disconnect from socket
+     */
+    fun stopSession() {
+        serviceClient.stopService()
+    }
+
     fun startCall(socketDataModel: SocketDataModel) {
+        validateSession()
         webRTCClient.sendConnectionRequest(socketDataModel)
     }
 
     fun rejectCall(socketDataModel: SocketDataModel) {
+        validateSession()
         webRTCClient.sendRejectCall(socketDataModel)
     }
 
     fun endCall() {
+        validateSession()
         serviceClient.sendEndCall()
     }
 
     fun disconnectSocket() {
+        validateSession()
         socketClient.disconnectSocket()
     }
 
-    fun stopService() {
-        serviceClient.stopService()
-    }
-
     fun recordCallLog() {
+        validateSession()
         webRTCClient.recordCallLog()
     }
 
     fun observeTargetContact(target: String, status: (UserStatusEnum) -> Unit) {
+        validateSession()
         webRTCClient.observeTargetContact(target) {
             status(it)
         }
     }
 
     fun sendChatToSocket(socketDataModel: SocketDataModel) {
+        validateSession()
         socketClient.sendEventToSocket(socketDataModel)
     }
 
@@ -110,28 +132,34 @@ class ByonCallSDK private constructor(
         owner: AppCompatActivity,
         chat: (SocketDataModel) -> Unit
     ) {
+        validateSession()
         socketClient.onLatestChat.observe(owner) {
             chat(it)
         }
     }
 
     fun toggleScreenShare(isStarting: Boolean) {
+        validateSession()
         serviceClient.toggleScreenShare(isStarting)
     }
 
     fun toggleAudio(shouldBeMuted: Boolean) {
+        validateSession()
         serviceClient.toggleAudio(shouldBeMuted)
     }
 
     fun toggleAudioDevice(type: String) {
+        validateSession()
         serviceClient.toggleAudioDevice(type)
     }
 
     fun switchCamera() {
+        validateSession()
         serviceClient.switchCamera()
     }
 
     fun toggleVideo(shouldBeMuted: Boolean) {
+        validateSession()
         serviceClient.toggleVideo(shouldBeMuted)
     }
 
@@ -143,11 +171,13 @@ class ByonCallSDK private constructor(
         localSurfaceView: SurfaceViewRenderer?,
         remoteSurfaceView: SurfaceViewRenderer?
     ) {
+        validateSession()
         serviceClient.setupViews(isVideoCall, isCaller, target)
         setSurfaceView(localSurfaceView, remoteSurfaceView)
     }
 
     fun setSurfaceView(local: SurfaceViewRenderer?, remote: SurfaceViewRenderer?) {
+        validateSession()
         ServiceCallByon.apply {
             localSurfaceView = local
             remoteSurfaceView = remote
@@ -155,15 +185,21 @@ class ByonCallSDK private constructor(
     }
 
     fun clearSurfaceView() {
-        ServiceCallByon.apply {
-            remoteSurfaceView?.release()
-            remoteSurfaceView = null
-            localSurfaceView?.release()
-            localSurfaceView = null
+        validateSession()
+        try {
+            ServiceCallByon.apply {
+                remoteSurfaceView?.release()
+                remoteSurfaceView = null
+                localSurfaceView?.release()
+                localSurfaceView = null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
     fun setScreenPermissionIntent(intent: Intent?) {
+        validateSession()
         ServiceCallByon.screenPermissionIntent = intent
     }
 

@@ -15,19 +15,19 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.dartmedia.byoncallsdkclient.R
-import com.dartmedia.byoncallsdkclient.adapter.CallLogAdapter
-import com.dartmedia.byoncallsdkclient.databinding.ActivityHistoryCallBinding
-import com.dartmedia.byoncallsdkclient.ui.viewmodel.HistoryCallViewModel
-import com.dartmedia.byoncallsdkclient.ui.viewmodel.ViewModelFactory
 import com.dartmedia.byoncallsdk.libraryapi.ByonCallSDK
 import com.dartmedia.byoncallsdk.model.SocketDataModel
 import com.dartmedia.byoncallsdk.model.SocketDataTypeEnum
 import com.dartmedia.byoncallsdk.utils.image.WhiteBackgroundTransformation
+import com.dartmedia.byoncallsdkclient.R
+import com.dartmedia.byoncallsdkclient.adapter.CallLogAdapter
+import com.dartmedia.byoncallsdkclient.databinding.ActivityHistoryCallBinding
 import com.dartmedia.byoncallsdkclient.network.CallHistoryData
 import com.dartmedia.byoncallsdkclient.network.CallHistoryResponse
 import com.dartmedia.byoncallsdkclient.network.RetrofitClient
 import com.dartmedia.byoncallsdkclient.network.TokenUtils
+import com.dartmedia.byoncallsdkclient.ui.viewmodel.HistoryCallViewModel
+import com.dartmedia.byoncallsdkclient.ui.viewmodel.ViewModelFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -71,7 +71,7 @@ class HistoryCallActivity : AppCompatActivity(), ByonCallSDK.CallListener {
         if (myPhone.isEmpty() || myPhone == "") {
             finish()
         } else {
-            byonCallSDK = ByonCallSDK.initialize(
+            byonCallSDK = ByonCallSDK.startSession(
                 this,
                 socketUrl = SOCKET_URL,
                 myPhone = myPhone
@@ -343,7 +343,7 @@ class HistoryCallActivity : AppCompatActivity(), ByonCallSDK.CallListener {
     }
 
     override fun onDestroy() {
-        byonCallSDK?.disconnectSocket()
+        byonCallSDK?.stopSession()
         super.onDestroy()
     }
 

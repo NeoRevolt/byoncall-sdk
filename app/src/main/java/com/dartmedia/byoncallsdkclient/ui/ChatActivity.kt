@@ -14,14 +14,14 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.dartmedia.byoncallsdkclient.R
-import com.dartmedia.byoncallsdkclient.adapter.ChatAdapter
-import com.dartmedia.byoncallsdkclient.databinding.ActivityMainBinding
-import com.dartmedia.byoncallsdkclient.model.ChatModel
 import com.dartmedia.byoncallsdk.libraryapi.ByonCallSDK
 import com.dartmedia.byoncallsdk.model.SocketDataModel
 import com.dartmedia.byoncallsdk.model.SocketDataTypeEnum
 import com.dartmedia.byoncallsdk.utils.image.WhiteBackgroundTransformation
+import com.dartmedia.byoncallsdkclient.R
+import com.dartmedia.byoncallsdkclient.adapter.ChatAdapter
+import com.dartmedia.byoncallsdkclient.databinding.ActivityMainBinding
+import com.dartmedia.byoncallsdkclient.model.ChatModel
 import com.google.gson.Gson
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -73,7 +73,7 @@ class ChatActivity : AppCompatActivity(), ByonCallSDK.CallListener {
         if (myPhone.isEmpty() || myPhone == "") {
             finish()
         } else {
-            byonCallSDK = ByonCallSDK.initialize(
+            byonCallSDK = ByonCallSDK.startSession(
                 this,
                 socketUrl = SOCKET_URL,
                 myPhone = myPhone
@@ -92,8 +92,6 @@ class ChatActivity : AppCompatActivity(), ByonCallSDK.CallListener {
         binding.apply {
 
             backBtn.setOnClickListener {
-//                onBackPressedDispatcher.onBackPressed()
-                byonCallSDK?.stopService()
                 finish()
             }
 
@@ -227,11 +225,11 @@ class ChatActivity : AppCompatActivity(), ByonCallSDK.CallListener {
 
                 val isVideoCall = data.type == SocketDataTypeEnum.StartVideoCall
                 if (isVideoCall) {
-                    incomingCallTitleTv.text = "Branded Video Call"
+                    incomingCallTitleTv.text = "Video Call"
                     callTypeIconIv.setImageResource(R.drawable.video_ic_filled_blue)
 
                 } else {
-                    incomingCallTitleTv.text = "Branded Voice Call"
+                    incomingCallTitleTv.text = "Voice Call"
                     callTypeIconIv.setImageResource(R.drawable.voice_icon_blue)
                 }
                 incomingCallCallerTv.text = "${data.senderName}"
@@ -415,11 +413,11 @@ class ChatActivity : AppCompatActivity(), ByonCallSDK.CallListener {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        byonCallSDK?.stopService()
+        finish()
     }
 
     override fun onDestroy() {
-        byonCallSDK?.disconnectSocket()
+        byonCallSDK?.stopSession()
         super.onDestroy()
     }
 
