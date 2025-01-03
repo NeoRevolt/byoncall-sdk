@@ -79,7 +79,8 @@ class ServiceCallByon : Service(), ByonCallRepository.Listener {
 
     private fun handleStopService() {
         stopForeground(STOP_FOREGROUND_REMOVE)
-        byonCallRepository.endCall()
+        // TODO : endCall() will close all PeersConnection and reset WebRTC, but causes error when triggered for stop session
+//        byonCallRepository.endCall()
         byonCallRepository.disconnectSocket {
             isServiceRunning = false
             stopSelf()
