@@ -6,9 +6,9 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.dartmedia.byoncallsdkclient.databinding.ActivityLoginBinding
-import com.dartmedia.brandedsdk.utils.contacts.ContactSaver
-import com.dartmedia.brandedsdk.utils.extension.getCameraAndMicPermission
-import com.dartmedia.brandedsdk.utils.phone.PhoneNumberUtils
+import com.dartmedia.byoncallsdk.utils.contacts.ContactSaver
+import com.dartmedia.byoncallsdk.utils.extension.getCameraAndMicPermission
+import com.dartmedia.byoncallsdk.utils.phone.PhoneNumberUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

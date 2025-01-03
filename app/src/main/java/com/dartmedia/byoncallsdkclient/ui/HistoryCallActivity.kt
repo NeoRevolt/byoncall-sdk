@@ -20,10 +20,10 @@ import com.dartmedia.byoncallsdkclient.adapter.CallLogAdapter
 import com.dartmedia.byoncallsdkclient.databinding.ActivityHistoryCallBinding
 import com.dartmedia.byoncallsdkclient.ui.viewmodel.HistoryCallViewModel
 import com.dartmedia.byoncallsdkclient.ui.viewmodel.ViewModelFactory
-import com.dartmedia.brandedsdk.library.BrandedSDK
-import com.dartmedia.brandedsdk.model.SocketDataModel
-import com.dartmedia.brandedsdk.model.SocketDataTypeEnum
-import com.dartmedia.brandedsdk.utils.image.WhiteBackgroundTransformation
+import com.dartmedia.byoncallsdk.libraryapi.ByonCallSDK
+import com.dartmedia.byoncallsdk.model.SocketDataModel
+import com.dartmedia.byoncallsdk.model.SocketDataTypeEnum
+import com.dartmedia.byoncallsdk.utils.image.WhiteBackgroundTransformation
 import com.dartmedia.byoncallsdkclient.network.CallHistoryData
 import com.dartmedia.byoncallsdkclient.network.CallHistoryResponse
 import com.dartmedia.byoncallsdkclient.network.RetrofitClient
@@ -39,9 +39,9 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 
-class HistoryCallActivity : AppCompatActivity(), BrandedSDK.CallListener {
+class HistoryCallActivity : AppCompatActivity(), ByonCallSDK.CallListener {
 
-    private var brandedSDK: BrandedSDK? = null
+    private var byonCallSDK: ByonCallSDK? = null
 
     private lateinit var binding: ActivityHistoryCallBinding
     private lateinit var callLogAdapter: CallLogAdapter
@@ -71,12 +71,12 @@ class HistoryCallActivity : AppCompatActivity(), BrandedSDK.CallListener {
         if (myPhone.isEmpty() || myPhone == "") {
             finish()
         } else {
-            brandedSDK = BrandedSDK.initialize(
+            byonCallSDK = ByonCallSDK.initialize(
                 this,
                 socketUrl = SOCKET_URL,
                 myPhone = myPhone
             )
-            brandedSDK?.callListener = this
+            byonCallSDK?.callListener = this
         }
     }
 
@@ -215,8 +215,8 @@ class HistoryCallActivity : AppCompatActivity(), BrandedSDK.CallListener {
                 declineButton.setOnClickListener {
                     incomingCallLayout.isVisible = false
                     try {
-                        brandedSDK?.sendRejectCall(data)
-                        brandedSDK?.recordCallLog()//TODO (Zal): Record call log to DB
+                        byonCallSDK?.sendRejectCall(data)
+                        byonCallSDK?.recordCallLog()//TODO (Zal): Record call log to DB
                     } catch (e: Exception) {
                         e.printStackTrace()
                         Log.d(TAG, "$TAG Exception : ${e.message}")
@@ -269,8 +269,8 @@ class HistoryCallActivity : AppCompatActivity(), BrandedSDK.CallListener {
 
             if (formattedDateTime.isNotEmpty()) {
                 try {
-                    brandedSDK?.sendRejectCall(data)
-                    brandedSDK?.recordCallLog()
+                    byonCallSDK?.sendRejectCall(data)
+                    byonCallSDK?.recordCallLog()
                     GlobalScope.launch(Dispatchers.Main) {
                         delay(1000)
                         // TODO send chat or make alarm
@@ -307,8 +307,8 @@ class HistoryCallActivity : AppCompatActivity(), BrandedSDK.CallListener {
             val selectedItem = items[which]
             if (selectedItem.isNotEmpty()) {
                 try {
-                    brandedSDK?.sendRejectCall(data)
-                    brandedSDK?.recordCallLog()
+                    byonCallSDK?.sendRejectCall(data)
+                    byonCallSDK?.recordCallLog()
                     GlobalScope.launch(Dispatchers.Main) {
                         delay(1000)
                         // TODO send chat or make alarm
@@ -343,7 +343,7 @@ class HistoryCallActivity : AppCompatActivity(), BrandedSDK.CallListener {
     }
 
     override fun onDestroy() {
-        brandedSDK?.disconnectSocket()
+        byonCallSDK?.disconnectSocket()
         super.onDestroy()
     }
 

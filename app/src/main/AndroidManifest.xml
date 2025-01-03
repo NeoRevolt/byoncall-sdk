@@ -62,11 +62,12 @@
             android:name=".ui.CallActivity"
             android:exported="false" />
 
-        <receiver android:name="com.dartmedia.brandedsdk.service.BrandedServiceReceiver" />
+        <receiver android:name="com.dartmedia.byoncallsdk.service.ServiceReceiverByonCall" />
 
         <service
-            android:name="com.dartmedia.brandedsdk.service.BrandedService"
+            android:name="com.dartmedia.byoncallsdk.service.ServiceCallByon"
             android:foregroundServiceType="mediaProjection" />
+
     </application>
 
 </manifest>

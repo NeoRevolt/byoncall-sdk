@@ -18,10 +18,10 @@ import com.dartmedia.byoncallsdkclient.R
 import com.dartmedia.byoncallsdkclient.adapter.ChatAdapter
 import com.dartmedia.byoncallsdkclient.databinding.ActivityMainBinding
 import com.dartmedia.byoncallsdkclient.model.ChatModel
-import com.dartmedia.brandedsdk.library.BrandedSDK
-import com.dartmedia.brandedsdk.model.SocketDataModel
-import com.dartmedia.brandedsdk.model.SocketDataTypeEnum
-import com.dartmedia.brandedsdk.utils.image.WhiteBackgroundTransformation
+import com.dartmedia.byoncallsdk.libraryapi.ByonCallSDK
+import com.dartmedia.byoncallsdk.model.SocketDataModel
+import com.dartmedia.byoncallsdk.model.SocketDataTypeEnum
+import com.dartmedia.byoncallsdk.utils.image.WhiteBackgroundTransformation
 import com.google.gson.Gson
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -35,9 +35,9 @@ import java.util.Locale
 import java.util.UUID
 
 
-class ChatActivity : AppCompatActivity(), BrandedSDK.CallListener {
+class ChatActivity : AppCompatActivity(), ByonCallSDK.CallListener {
 
-    private var brandedSDK: BrandedSDK? = null
+    private var byonCallSDK: ByonCallSDK? = null
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var chatAdapter: ChatAdapter
@@ -73,12 +73,12 @@ class ChatActivity : AppCompatActivity(), BrandedSDK.CallListener {
         if (myPhone.isEmpty() || myPhone == "") {
             finish()
         } else {
-            brandedSDK = BrandedSDK.initialize(
+            byonCallSDK = ByonCallSDK.initialize(
                 this,
                 socketUrl = SOCKET_URL,
                 myPhone = myPhone
             )
-            brandedSDK?.callListener = this
+            byonCallSDK?.callListener = this
             chatAdapter = ChatAdapter()
             binding.rvChat.apply {
                 layoutManager = LinearLayoutManager(this@ChatActivity)
@@ -93,7 +93,7 @@ class ChatActivity : AppCompatActivity(), BrandedSDK.CallListener {
 
             backBtn.setOnClickListener {
 //                onBackPressedDispatcher.onBackPressed()
-                brandedSDK?.stopService()
+                byonCallSDK?.stopService()
                 finish()
             }
 
@@ -117,7 +117,7 @@ class ChatActivity : AppCompatActivity(), BrandedSDK.CallListener {
 
             audioCallBtn.setOnClickListener {
                 try {
-                    brandedSDK?.sendConnectionRequest(
+                    byonCallSDK?.sendConnectionRequest(
                         SocketDataModel(
                             type = SocketDataTypeEnum.StartAudioCall,
                             senderId = myPhone,
@@ -147,7 +147,7 @@ class ChatActivity : AppCompatActivity(), BrandedSDK.CallListener {
 
             videoCallBtn.setOnClickListener {
                 try {
-                    brandedSDK?.sendConnectionRequest(
+                    byonCallSDK?.sendConnectionRequest(
                         SocketDataModel(
                             type = SocketDataTypeEnum.StartVideoCall,
                             senderId = myPhone,
@@ -178,7 +178,7 @@ class ChatActivity : AppCompatActivity(), BrandedSDK.CallListener {
     }
 
     private fun sendChatMessage(chatModel: ChatModel) {
-        brandedSDK?.sendEventToSocket(
+        byonCallSDK?.sendEventToSocket(
             SocketDataModel(
                 type = SocketDataTypeEnum.StartChatting,
                 senderId = myPhone,
@@ -189,7 +189,7 @@ class ChatActivity : AppCompatActivity(), BrandedSDK.CallListener {
     }
 
     private fun observeChatFromSocket(myUserId: String) {
-        brandedSDK?.observeChatFromSocket(this) { chatFromSocket ->
+        byonCallSDK?.observeChatFromSocket(this) { chatFromSocket ->
             when (chatFromSocket.type) {
                 SocketDataTypeEnum.StartChatting -> {
                     Log.d(TAG, "observeChat : $chatFromSocket")
@@ -273,8 +273,8 @@ class ChatActivity : AppCompatActivity(), BrandedSDK.CallListener {
                 declineButton.setOnClickListener {
                     incomingCallLayout.isVisible = false
                     try {
-                        brandedSDK?.sendRejectCall(data)
-                        brandedSDK?.recordCallLog()//TODO (Zal): Record call log to DB
+                        byonCallSDK?.sendRejectCall(data)
+                        byonCallSDK?.recordCallLog()//TODO (Zal): Record call log to DB
                     } catch (e: Exception) {
                         e.printStackTrace()
                         Log.d(TAG, "$TAG Exception : ${e.message}")
@@ -338,8 +338,8 @@ class ChatActivity : AppCompatActivity(), BrandedSDK.CallListener {
                     receiverId = targetPhone,
                 )
                 try {
-                    brandedSDK?.sendRejectCall(data)
-                    brandedSDK?.recordCallLog()
+                    byonCallSDK?.sendRejectCall(data)
+                    byonCallSDK?.recordCallLog()
                     GlobalScope.launch(Dispatchers.Main) {
                         delay(1000)
                         sendChatMessage(chatModel)
@@ -388,8 +388,8 @@ class ChatActivity : AppCompatActivity(), BrandedSDK.CallListener {
                     receiverId = targetPhone,
                 )
                 try {
-                    brandedSDK?.sendRejectCall(data)
-                    brandedSDK?.recordCallLog()
+                    byonCallSDK?.sendRejectCall(data)
+                    byonCallSDK?.recordCallLog()
                     GlobalScope.launch(Dispatchers.Main) {
                         delay(1000)
                         sendChatMessage(chatModel)
@@ -415,11 +415,11 @@ class ChatActivity : AppCompatActivity(), BrandedSDK.CallListener {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        brandedSDK?.stopService()
+        byonCallSDK?.stopService()
     }
 
     override fun onDestroy() {
-        brandedSDK?.disconnectSocket()
+        byonCallSDK?.disconnectSocket()
         super.onDestroy()
     }
 

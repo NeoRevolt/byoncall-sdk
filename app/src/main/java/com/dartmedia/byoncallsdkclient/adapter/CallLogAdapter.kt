@@ -12,7 +12,7 @@ import com.dartmedia.byoncallsdkclient.database.CallLog
 import com.dartmedia.byoncallsdkclient.database.helper.CallLogDiffCallback
 import com.dartmedia.byoncallsdkclient.databinding.ItemCallLogBinding
 import com.dartmedia.byoncallsdkclient.ui.HistoryDetailActivity
-import com.dartmedia.brandedsdk.utils.image.WhiteBackgroundTransformation
+import com.dartmedia.byoncallsdk.utils.image.WhiteBackgroundTransformation
 
 class CallLogAdapter : RecyclerView.Adapter<CallLogAdapter.CallLogViewHolder>() {
 

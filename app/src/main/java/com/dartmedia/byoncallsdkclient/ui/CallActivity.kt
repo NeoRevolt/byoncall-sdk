@@ -18,21 +18,21 @@ import com.dartmedia.byoncallsdkclient.R
 import com.dartmedia.byoncallsdkclient.databinding.ActivityCallBinding
 import com.dartmedia.byoncallsdkclient.ui.viewmodel.CallLogViewModel
 import com.dartmedia.byoncallsdkclient.ui.viewmodel.ViewModelFactory
-import com.dartmedia.brandedsdk.library.BrandedSDK
-import com.dartmedia.brandedsdk.model.UserStatusEnum
-import com.dartmedia.brandedsdk.utils.audio.manager.RTCAudioManager
-import com.dartmedia.brandedsdk.utils.date.DateUtils.getCurrentDateDetailed
-import com.dartmedia.brandedsdk.utils.extension.convertToHumanTime
-import com.dartmedia.brandedsdk.utils.image.WhiteBackgroundTransformation
+import com.dartmedia.byoncallsdk.libraryapi.ByonCallSDK
+import com.dartmedia.byoncallsdk.model.UserStatusEnum
+import com.dartmedia.byoncallsdk.utils.audio.manager.RTCAudioManager
+import com.dartmedia.byoncallsdk.utils.date.DateUtils.getCurrentDateDetailed
+import com.dartmedia.byoncallsdk.utils.extension.convertToHumanTime
+import com.dartmedia.byoncallsdk.utils.image.WhiteBackgroundTransformation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class CallActivity : AppCompatActivity(), BrandedSDK.InCallListener {
+class CallActivity : AppCompatActivity(), ByonCallSDK.InCallListener {
 
-    private var brandedSDK = BrandedSDK.getInstance()
+    private var byonCallSDK = ByonCallSDK.getInstance()
 
     private lateinit var requestScreenCaptureLauncher: ActivityResultLauncher<Intent>
     private lateinit var callLogViewModel: CallLogViewModel
@@ -62,10 +62,10 @@ class CallActivity : AppCompatActivity(), BrandedSDK.InCallListener {
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val intent = result.data
-                brandedSDK.setScreenPermissionIntent(intent)
+                byonCallSDK.setScreenPermissionIntent(intent)
                 isScreenCasting = true
                 updateUiToScreenCaptureIsOn()
-                brandedSDK.toggleScreenShare(true)
+                byonCallSDK.toggleScreenShare(true)
             }
         }
     }
@@ -91,7 +91,7 @@ class CallActivity : AppCompatActivity(), BrandedSDK.InCallListener {
         } ?: kotlin.run {
             finish()
         }
-        brandedSDK.inCallListener = this
+        byonCallSDK.inCallListener = this
         targetName = intent.getStringExtra("targetName") ?: target
         targetImgUrl = intent.getStringExtra("targetImg")
         callMessage = intent.getStringExtra("message")
@@ -118,7 +118,7 @@ class CallActivity : AppCompatActivity(), BrandedSDK.InCallListener {
 
         target?.let { target ->
             targetName?.let { targetName ->
-                brandedSDK.observeTargetContact(target) {
+                byonCallSDK.observeTargetContact(target) {
                     when (it) {
 
                         UserStatusEnum.ONLINE -> {
@@ -169,11 +169,11 @@ class CallActivity : AppCompatActivity(), BrandedSDK.InCallListener {
                 switchCameraButton.isVisible = false
                 voiceCallLayouts.isVisible = true
                 voiceCallEndCallButton.setOnClickListener {
-                    brandedSDK.sendEndCall()
+                    byonCallSDK.sendEndCall()
                 }
             }
 
-            brandedSDK.setupViews(
+            byonCallSDK.setupViews(
                 isVideoCall = isVideoCall,
                 isCaller = isCaller,
                 target = target!!,
@@ -182,11 +182,11 @@ class CallActivity : AppCompatActivity(), BrandedSDK.InCallListener {
             )
 
             endCallButton.setOnClickListener {
-                brandedSDK.sendEndCall()
+                byonCallSDK.sendEndCall()
             }
 
             switchCameraButton.setOnClickListener {
-                brandedSDK.switchCamera()
+                byonCallSDK.switchCamera()
             }
         }
         setupMicToggleClicked()
@@ -215,7 +215,7 @@ class CallActivity : AppCompatActivity(), BrandedSDK.InCallListener {
                     // end screen casting
                     isScreenCasting = false
                     updateUiToScreenCaptureIsOff()
-                    brandedSDK.toggleScreenShare(false)
+                    byonCallSDK.toggleScreenShare(false)
                 }
             }
         }
@@ -254,20 +254,20 @@ class CallActivity : AppCompatActivity(), BrandedSDK.InCallListener {
         binding.apply {
             toggleMicrophoneButton.setOnClickListener {
                 if (!isMicrophoneMuted) {
-                    brandedSDK.toggleAudio(true)
+                    byonCallSDK.toggleAudio(true)
                     toggleMicrophoneButton.setImageResource(R.drawable.ic_mic_on)
                 } else {
-                    brandedSDK.toggleAudio(false)
+                    byonCallSDK.toggleAudio(false)
                     toggleMicrophoneButton.setImageResource(R.drawable.ic_mic_off)
                 }
                 isMicrophoneMuted = !isMicrophoneMuted
             }
             voiceCallMuteButton.setOnClickListener {
                 if (!isMicrophoneMuted) {
-                    brandedSDK.toggleAudio(true)
+                    byonCallSDK.toggleAudio(true)
                     voiceCallMuteButton.setImageResource(R.drawable.ic_mic_on)
                 } else {
-                    brandedSDK.toggleAudio(false)
+                    byonCallSDK.toggleAudio(false)
                     voiceCallMuteButton.setImageResource(R.drawable.ic_mic_off)
                 }
                 isMicrophoneMuted = !isMicrophoneMuted
@@ -281,12 +281,12 @@ class CallActivity : AppCompatActivity(), BrandedSDK.InCallListener {
                 if (isSpeakerMode) {
                     // set it to earpiece mode
                     toggleAudioDevice.setImageResource(R.drawable.ic_speaker)
-                    brandedSDK.toggleAudioDevice(RTCAudioManager.AudioDevice.EARPIECE.name)
+                    byonCallSDK.toggleAudioDevice(RTCAudioManager.AudioDevice.EARPIECE.name)
 
                 } else {
                     // set it to speaker mode
                     toggleAudioDevice.setImageResource(R.drawable.ic_ear)
-                    brandedSDK.toggleAudioDevice(RTCAudioManager.AudioDevice.SPEAKER_PHONE.name)
+                    byonCallSDK.toggleAudioDevice(RTCAudioManager.AudioDevice.SPEAKER_PHONE.name)
 
                 }
                 isSpeakerMode = !isSpeakerMode
@@ -298,10 +298,10 @@ class CallActivity : AppCompatActivity(), BrandedSDK.InCallListener {
         binding.apply {
             toggleCameraButton.setOnClickListener {
                 if (!isCameraMuted) {
-                    brandedSDK.toggleVideo(true)
+                    byonCallSDK.toggleVideo(true)
                     toggleCameraButton.setImageResource(R.drawable.ic_camera_on)
                 } else {
-                    brandedSDK.toggleVideo(false)
+                    byonCallSDK.toggleVideo(false)
                     toggleCameraButton.setImageResource(R.drawable.ic_camera_off)
                 }
 
@@ -356,11 +356,11 @@ class CallActivity : AppCompatActivity(), BrandedSDK.InCallListener {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        brandedSDK.sendEndCall()
+        byonCallSDK.sendEndCall()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        brandedSDK.clearSurfaceView()
+        byonCallSDK.clearSurfaceView()
     }
 }

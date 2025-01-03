@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace 'com.dartmedia.brandedsdk'
+    namespace 'com.dartmedia.byoncallsdk'
     compileSdk 33
 
     defaultConfig {

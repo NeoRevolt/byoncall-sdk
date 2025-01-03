@@ -6,7 +6,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.dartmedia.byoncallsdkclient.R
 import com.dartmedia.byoncallsdkclient.databinding.ActivityHistoryDetailBinding
-import com.dartmedia.brandedsdk.utils.image.WhiteBackgroundTransformation
+import com.dartmedia.byoncallsdk.utils.image.WhiteBackgroundTransformation
 
 class HistoryDetailActivity : AppCompatActivity() {
 
