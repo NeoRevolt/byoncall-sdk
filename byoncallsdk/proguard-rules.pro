@@ -21,7 +21,7 @@
 #-renamesourcefileattribute SourceFile
 
 -keep class com.dartmedia.byoncallsdk.libraryapi.ByonCallSDK { *; }
--keep class com.dartmedia.byoncallsdk.library.ByonCallSDK$* { *; }
+-keep class com.dartmedia.byoncallsdk.libraryapi.ByonCallSDK$* { *; }
 -keep class com.dartmedia.byoncallsdk.model.* { *; }
 -keep class com.dartmedia.byoncallsdk.repository.ByonCallRepository { *; }
 -keepclassmembers class com.dartmedia.byoncallsdk.repository.ByonCallRepository$Companion { *; }
