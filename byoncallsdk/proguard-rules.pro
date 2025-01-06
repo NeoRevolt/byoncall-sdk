@@ -19,3 +19,14 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep class com.dartmedia.byoncallsdk.libraryapi.ByonCallSDK { *; }
+-keep class com.dartmedia.byoncallsdk.library.ByonCallSDK$* { *; }
+-keep class com.dartmedia.byoncallsdk.model.* { *; }
+-keep class com.dartmedia.byoncallsdk.repository.ByonCallRepository { *; }
+-keepclassmembers class com.dartmedia.byoncallsdk.repository.ByonCallRepository$Companion { *; }
+-keep class com.dartmedia.byoncallsdk.service.* { *; }
+-keep class com.dartmedia.byoncallsdk.socket.SocketClientByonCall { *; }
+-keep class com.dartmedia.byoncallsdk.utils.audio.manager.RTCAudioManager { *; }
+-keep class com.dartmedia.byoncallsdk.utils.audio.manager.RTCAudioManager$* { *; }
+-keep class com.dartmedia.byoncallsdk.utils.image.WhiteBackgroundTransformation { *; }
