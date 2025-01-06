@@ -10,6 +10,7 @@ import com.dartmedia.byoncallsdk.repository.ByonCallRepository
 import com.dartmedia.byoncallsdk.service.ServiceCallByon
 import com.dartmedia.byoncallsdk.service.ServiceClientByonCall
 import com.dartmedia.byoncallsdk.socket.SocketClientByonCall
+import org.webrtc.PeerConnection
 import org.webrtc.SurfaceViewRenderer
 
 /**
@@ -43,9 +44,15 @@ class ByonCallSDK private constructor(
     /**
      * In-Call Listener to receive the Connection Status and End Call when Calling
      *
-     * - [onCallReceived] Incoming call request from other Peers
+     * - [onCallStatusChanged] Call connection status return enum of [UserStatusEnum]
      *
-     * - [onCallDeclined] Declined happened when the other Peers suddenly close the call before you even Answer
+     * ```
+     * enum class UserStatusEnum {
+     *     ONLINE, OFFLINE, CALLING, IN_CALL, RINGING, DECLINED, NO_ANSWER, HANGUP, FAILED
+     * }
+     * ```
+     *
+     * - [onCallEnded] End call
      *
      */
     interface InCallListener {
@@ -65,9 +72,23 @@ class ByonCallSDK private constructor(
     /**
      * In-Call Listener to receive the Connection Status and End Call when Calling
      *
-     * - [onCallReceived] Incoming call request from other Peers
+     * - [onCallStatusChanged] Call connection status. Return enum of [UserStatusEnum] based from [PeerConnection.PeerConnectionState]
      *
-     * - [onCallDeclined] Declined happened when the other Peers suddenly close the call before you even Answer
+     *
+     * ```
+     *  // PeerConnectionState to UserStatusEnum mappings
+     *      // connecting   -> calling
+     *      // connected 	-> in-call
+     *      // disconnected	-> calling
+     *      // failed 		-> failed
+     *      // closed 		-> offline
+     *
+     * enum class UserStatusEnum {
+     *     CALLING, IN_CALL, FAILED, OFFLINE
+     * }
+     * ```
+     *
+     * - [onCallEnded] End call
      *
      */
     var inCallListener: InCallListener? = null
