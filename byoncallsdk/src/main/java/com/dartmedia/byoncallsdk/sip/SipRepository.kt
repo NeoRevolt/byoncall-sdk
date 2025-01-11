@@ -30,10 +30,12 @@ class SipRepository(private val context: Context) {
 
                 // Register with SIP server
                 sipManager?.register(sipProfile, 30, object : SipRegistrationListener {
+                    @Deprecated("Deprecated in Java")
                     override fun onRegistering(localProfileUri: String?) {
                         Log.d(TAG, "Registering with SIP server : $localProfileUri")
                     }
 
+                    @Deprecated("Deprecated in Java")
                     override fun onRegistrationDone(localProfileUri: String?, expiryTime: Long) {
                         Log.d(
                             TAG,
@@ -41,6 +43,7 @@ class SipRepository(private val context: Context) {
                         )
                     }
 
+                    @Deprecated("Deprecated in Java")
                     override fun onRegistrationFailed(
                         localProfileUri: String?,
                         expiryTime: Int,
@@ -64,23 +67,28 @@ class SipRepository(private val context: Context) {
     fun makeCall(callee: String) {
         try {
             val listener = object : Listener() {
+                @Deprecated("Deprecated in Java")
                 override fun onReadyToCall(call: SipAudioCall?) {
                     Log.d(TAG, "Ready to call")
                 }
 
+                @Deprecated("Deprecated in Java")
                 override fun onCalling(call: SipAudioCall?) {
                     Log.d(TAG, "On Calling...")
                 }
 
+                @Deprecated("Deprecated in Java")
                 override fun onRinging(call: SipAudioCall?, caller: SipProfile?) {
                     sipListener?.onRinging()
                     Log.d(TAG, "On Ringing...")
                 }
 
+                @Deprecated("Deprecated in Java")
                 override fun onRingingBack(call: SipAudioCall?) {
                     Log.d(TAG, "On Ringing Back...")
                 }
 
+                @Deprecated("Deprecated in Java")
                 override fun onCallEstablished(call: SipAudioCall?) {
                     call?.startAudio()
                     call?.setSpeakerMode(true)
@@ -88,19 +96,23 @@ class SipRepository(private val context: Context) {
                     Log.d(TAG, "Call Established !")
                 }
 
+                @Deprecated("Deprecated in Java")
                 override fun onCallEnded(call: SipAudioCall?) {
                     sipListener?.onCallEnded()
                     Log.e(TAG, "Call Ended...")
                 }
 
+                @Deprecated("Deprecated in Java")
                 override fun onCallBusy(call: SipAudioCall?) {
                     Log.e(TAG, "Call Busy")
                 }
 
+                @Deprecated("Deprecated in Java")
                 override fun onCallHeld(call: SipAudioCall?) {
                     Log.e(TAG, "Call Held")
                 }
 
+                @Deprecated("Deprecated in Java")
                 override fun onError(call: SipAudioCall?, errorCode: Int, errorMessage: String?) {
                     sipListener?.onError(errorCode, errorMessage)
                     Log.e(
@@ -109,6 +121,7 @@ class SipRepository(private val context: Context) {
                     )
                 }
 
+                @Deprecated("Deprecated in Java")
                 override fun onChanged(call: SipAudioCall?) {
                     super.onChanged(call)
                     Log.i(TAG, "On Changed...")

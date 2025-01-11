@@ -337,6 +337,7 @@ class HistoryCallActivity : AppCompatActivity(), ByonCallSDK.CallListener {
         observeLogsFromServer()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         super.onBackPressed()
         finish()

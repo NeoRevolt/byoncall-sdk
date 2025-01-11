@@ -411,6 +411,7 @@ class ChatActivity : AppCompatActivity(), ByonCallSDK.CallListener {
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         super.onBackPressed()
         finish()

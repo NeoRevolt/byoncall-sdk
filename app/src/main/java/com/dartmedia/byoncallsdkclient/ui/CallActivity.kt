@@ -354,6 +354,7 @@ class CallActivity : AppCompatActivity(), ByonCallSDK.InCallListener {
         finish()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         super.onBackPressed()
         byonCallSDK.endCall()
